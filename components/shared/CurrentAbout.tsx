@@ -4,14 +4,14 @@ import Link from "next/link"
 export const CurrentAbout = () => {
   return (
     <div className="flex flex-col gap-4">
-      <p>
+      <div>
         I&apos;ve lived in 8 cities on 4 continents. I worked at Twitter through
         its IPO. I spent a lot of my 20&apos;s launching startups, including one
         which was acquired. I&apos;ve enjoyed some success and grown a lot
         through failure — here&apos;s a bit about me.
-      </p>
+      </div>
 
-      <p>
+      <div>
         I like to work with people{" "}
         <AboutPopupTrigger
           popupContent={
@@ -24,7 +24,10 @@ export const CurrentAbout = () => {
               </div>
               <div className="mt-2 text-sm text-muted-foreground">
                 Related Essays:{" "}
-                <Link href="/writing/i-love-building-software">
+                <Link
+                  href="/writing/i-love-building-software"
+                  className="hover:underline"
+                >
                   I Love Building Software...again
                 </Link>
                 ,{" "}
@@ -45,9 +48,9 @@ export const CurrentAbout = () => {
           who care
         </AboutPopupTrigger>
         .
-      </p>
+      </div>
 
-      <p>
+      <div>
         I seek progress, but{" "}
         <AboutPopupTrigger
           popupContent={
@@ -68,12 +71,11 @@ export const CurrentAbout = () => {
             </div>
           }
         >
-          practice feeling OK where I am
+          practice feeling OK where I am.
         </AboutPopupTrigger>
-        .
-      </p>
+      </div>
 
-      <p>
+      <div>
         I enjoy solving problems but also finding the{" "}
         <AboutPopupTrigger
           popupContent={
@@ -106,9 +108,9 @@ export const CurrentAbout = () => {
           right problem
         </AboutPopupTrigger>{" "}
         to solve.
-      </p>
+      </div>
 
-      <p>
+      <div>
         I aspire for{" "}
         <AboutPopupTrigger
           popupContent={
@@ -143,7 +145,7 @@ export const CurrentAbout = () => {
           moderation
         </AboutPopupTrigger>
         . Lagom. 过犹不及.
-      </p>
+      </div>
     </div>
   )
 }

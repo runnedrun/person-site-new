@@ -4,7 +4,6 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import colors from "tailwindcss/colors"
 
 import "react-circular-progressbar/dist/styles.css"
-import { useState } from "react"
 
 const ProgressBarWithPopup = ({
   progress,
