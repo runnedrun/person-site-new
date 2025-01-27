@@ -3,12 +3,12 @@ import Link from "next/link"
 
 export const CurrentAbout = () => {
   return (
-    <div className="flex flex-col gap-4">
-      <div>
+    <div className="flex grow flex-col gap-4">
+      <div className="md:text-sm">
         I&apos;ve lived in 8 cities on 4 continents. I worked at Twitter through
         its IPO. I spent a lot of my 20&apos;s launching startups, including one
         which was acquired. I&apos;ve enjoyed some success and grown a lot
-        through failure — here&apos;s a bit about me.
+        through failure. Here&apos;s a bit about me.
       </div>
 
       <div>
@@ -51,7 +51,7 @@ export const CurrentAbout = () => {
       </div>
 
       <div>
-        I seek progress, but{" "}
+        I enjoy progress, but{" "}
         <AboutPopupTrigger
           popupContent={
             <div>
@@ -71,7 +71,7 @@ export const CurrentAbout = () => {
             </div>
           }
         >
-          practice feeling OK where I am.
+          am ok with where I am.
         </AboutPopupTrigger>
       </div>
 

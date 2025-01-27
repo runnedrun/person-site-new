@@ -1,5 +1,6 @@
 import { CurrentAbout } from "./CurrentAbout"
 import { FutureAbout } from "./FutureAbout"
+import { QADisplay } from "./QADisplay"
 
 interface SlideTransitionAboutProps {
   aspirationalMode: boolean
@@ -10,12 +11,15 @@ export const SlideTransitionAbout = ({
 }: SlideTransitionAboutProps) => {
   console.log(aspirationalMode)
   return (
-    <div className="w-full">
+    <div className="min-h-0 w-full grow">
       <div
-        className={`flex w-full transition-transform duration-300 ease-in-out ${aspirationalMode ? "-translate-x-full" : "translate-x-0"} `}
+        className={`flex h-full w-full transition-transform duration-300 ease-in-out ${aspirationalMode ? "-translate-x-full" : "translate-x-0"}`}
       >
-        <div className="w-full flex-shrink-0 bg-white p-2">
+        <div className="flex w-full flex-shrink-0 flex-col gap-4 bg-white px-2 pt-2">
           <CurrentAbout />
+          <div className="justify-self-end">
+            <QADisplay />
+          </div>
         </div>
         <div className="w-full flex-shrink-0 bg-white p-2">
           <FutureAbout />

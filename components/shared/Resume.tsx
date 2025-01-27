@@ -2,21 +2,50 @@ import Link from "next/link"
 import Image from "next/image"
 import ExperienceItem from "./ExperienceItem"
 import ExperienceGroup from "./ExperienceGroup"
-import ResearchItem from "./ResearchItem"
+import { useEffect } from "react"
+import { AboutPopupTrigger } from "./AboutPopupTrigger"
 
 export default function Portfolio() {
+  useEffect(() => {
+    // Check if URL has #resume anchor
+    if (window.location.hash === "#resume") {
+      // Get the resume element
+      const element = document.getElementById("resume")
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" })
+      }
+    }
+  }, [])
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12">
+    <div className="mx-auto max-w-7xl px-4 py-12" id="resume">
       {/* Main Experience Grid */}
       <div className="grid gap-8 md:grid-cols-2">
         <ExperienceGroup title="Building Businesses">
           <ExperienceItem
-            logo="/classadoo-logo-no-text.png"
+            logo="/personal-logo.png"
             title="Consulting"
-            link="http://classadoo.com"
-            period="2020-Present"
+            popupContent={
+              <div>
+                A few of my current clients:{" "}
+                <a
+                  className="text-blue-600 hover:underline"
+                  href="https://www.asha.io/"
+                >
+                  Asha
+                </a>
+                ,{" "}
+                <a
+                  className="text-blue-600 hover:underline"
+                  href="https://oscar.ai"
+                >
+                  Oscar AI
+                </a>
+              </div>
+            }
+            period="2020 - Present"
             role="Early Stage Startup Advising"
             description="I help early stage businesses discover and deliver high value tech products."
+            className="translate-y-5 scale-[1.75]"
           />
           <ExperienceItem
             logo="/andela-logo.png"
@@ -24,46 +53,131 @@ export default function Portfolio() {
             link="http://andela.com"
             period="2019 - 2020"
             role="Director of Product"
-            description="Led a team of 4 PMs and 12 engineers building tech to measure and facilitate engineering services."
+            description="Led a 16 person team building tech to measure and facilitate engineering services."
+          />
+          <ExperienceItem
+            logo="/classadoo-logo-no-text.png"
+            title="Classadoo"
+            popupContent="Our software was integrated into Andela's platform, and is no longer publicly available. Sad."
+            period="2017 - 2019"
+            role="Founder, CEO"
+            description="Tech powered Web Development classes accross the US, China and Pakistan. Acquired by Andela in 2018."
+            className="-translate-y-5 scale-[.75]"
+          />
+          <ExperienceItem
+            logo="/launch-camp-logo.svg"
+            title="Launch"
+            link="http://launchstudio.org"
+            period="2015 - 2017"
+            role="Founder, CEO"
+            className="-translate-y-3 scale-[.8]"
+            description={
+              <div>
+                Entrepreneurship Summer camp and after school program, now run
+                as <a href="http://launchstudio.org">Launch Studio</a> across
+                the SF bay area.
+              </div>
+            }
           />
         </ExperienceGroup>
 
         <ExperienceGroup title="Building Software">
           <ExperienceItem
+            logo="/hylite-logo.png"
+            title="Hylite"
+            link="https://hylitepeople.com"
+            period="2021 - Present"
+            role="Fractional CTO"
+            description="Built and maintained the Hylite app as they grew from $0 to their first enterprise contract."
+          />
+          <ExperienceItem
             logoText="O p  e   n"
             title="Open"
-            link="http://o-p-e-n.com"
-            period="2020-Present"
+            className="w-24 -translate-x-6"
+            link="https://hylitepeople.com"
+            period="2020 - Present"
             role="Advisor/Principal Engineer"
-            description="Helped unlock $7M in funding for online meditation classes."
+            description="Built a digital meditation studio for real time classes. Helped unlock $7M in funding."
           />
           <ExperienceItem
             logo="/dipsea-logo.png"
             title="Dipsea"
+            className="translate-y-4 scale-[1.75]"
             link="http://dipseastories.com"
-            period="2018-Present"
+            period="2018 - 2024"
             role="Technical Advisor"
-            description="Helped Dipsea launch their first iOS app. $0 to $12M in funding in 3 years."
+            description="Launched Dipsea's first iOS app. Company acquired by Revenue Cat in 2024."
+          />
+          <ExperienceItem
+            logo="/twitter-logo.png"
+            title="Twitter"
+            link="https://x.com"
+            period="2012 - 2015"
+            role="Software Engineer"
+            description="Worked on 3 teams. Built the first version of group messaging."
           />
         </ExperienceGroup>
       </div>
+      {/* side projects */}
+      <div className="mt-8 flex flex-wrap items-center gap-4">
+        <div className="text-lg font-bold">Active side projects:</div>
+        <div className="flex gap-2">
+          <a
+            href="https://yaya.press"
+            className="text-blue-600 hover:underline"
+          >
+            Yaya.press
+          </a>
+          <div>- Google Docs for language learners.</div>
+        </div>
+        <div className="flex gap-2">
+          <a
+            href="https://thearcgame.com"
+            className="text-blue-600 hover:underline"
+          >
+            TheArcGame.com
+          </a>
+          <div>- Control the arc of history.</div>
+        </div>
+        <div className="flex gap-2">
+          <a
+            href="https://curtaincall.me"
+            className="text-blue-600 hover:underline"
+          >
+            Curtaincall.me
+          </a>
+          <div>- Immersive theatre tool.</div>
+        </div>
+      </div>
 
       {/* Education Section */}
-      <div className="mt-16">
-        <div className="mb-6 flex items-center justify-center gap-4">
-          <Image
-            src="/olin-logo.png"
-            alt="Olin Logo"
-            width={60}
-            height={60}
-            className="rounded-full"
-          />
-          <h2 className="text-2xl font-bold">Olin College of Engineering</h2>
+      <div className="mt-8 flex flex-col items-center gap-4">
+        <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center gap-4">
+            <Image
+              src="/olin-logo.jpeg"
+              alt="Olin Logo"
+              width={60}
+              height={60}
+              className="rounded-full"
+            />
+            <h2 className="max-w-44 shrink text-2xl font-bold md:max-w-full">
+              <a
+                href="https://olin.edu"
+                className="hover:text-blue-600 hover:underline"
+              >
+                Olin College of Engineering
+              </a>
+            </h2>
+          </div>
         </div>
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-4">
-            Student, Teacher, Participant. Designed and taught 7 courses
-            including{" "}
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="mb-4">
+            Student, Teacher, Participant.{" "}
+            <AboutPopupTrigger popupContent="Olin College was, at that time, 100% tuition free for all admitted students. In my year they enrolled 86 students out of over 1000 applicants.">
+              Full scholarship
+            </AboutPopupTrigger>
+            . Designed and taught 7 courses. including{" "}
             <Link
               href="https://olinjs.github.com/olinjs.github.s13"
               className="text-blue-600 hover:underline"
@@ -71,30 +185,11 @@ export default function Portfolio() {
               Olin&apos;s first credited, student taught course
             </Link>
             .
-          </p>
-          <p className="text-gray-600">
+          </div>
+          <div className="text-gray-600">
             Graduated in 2013 with a degree in Engineering and Robotics, GPA of
             3.74.
-          </p>
-        </div>
-
-        {/* Research Section */}
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          <ResearchItem
-            title="Research in Applied Physiology"
-            period="2012-2013"
-            description="Designed and built an experiment measuring the effect of ambient temperature on sleep."
-          />
-          <ResearchItem
-            title="Research in Drones"
-            period="2012-2013"
-            description="Designed and built an autonomous drone for AGCO, to detect crop health."
-          />
-          <ResearchItem
-            title="Research in Robotic Sailing"
-            period="2013"
-            description="Designed and built a Sailbot starter kit for high and middle school aged children."
-          />
+          </div>
         </div>
       </div>
     </div>
