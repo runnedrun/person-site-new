@@ -4,6 +4,7 @@ import ExperienceItem from "./ExperienceItem"
 import ExperienceGroup from "./ExperienceGroup"
 import { useEffect } from "react"
 import { AboutPopupTrigger } from "./AboutPopupTrigger"
+import { About } from "./About"
 
 export default function Portfolio() {
   useEffect(() => {
@@ -17,8 +18,24 @@ export default function Portfolio() {
     }
   }, [])
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12" id="resume">
-      {/* Main Experience Grid */}
+    <div className="mx-auto max-w-7xl px-4 py-4" id="resume">
+      <div className="flex justify-center">
+        <div className="text-md w-[800px] pb-4 text-center font-semibold">
+          I started my career at Twitter then went on to launch a few companies
+          by myself and with others. My career themes are:{" "}
+          <AboutPopupTrigger popupContent="I built the first real-time messaging experience on Twitter. I built a live meditation studio that served classes with 20K+ users. I built a living coding classroom that let remote teachers do hands on classes with students around the world. I built a live, collaborative document editor for language learners. Honestly, I think I like this stuff because I like debugging and iterating with users in real time.">
+            real-time
+          </AboutPopupTrigger>
+          ,{" "}
+          <AboutPopupTrigger popupContent="My favorite projects have all started off as something small for myself, then grown one person at a time. This is not the only way to build software, and I've tried other approaches, including raising money and building something for a big market I've never met. I just don't like the balance of risk/return that gives.">
+            iterative
+          </AboutPopupTrigger>
+          , and{" "}
+          <AboutPopupTrigger popupContent="I've seen my own and other's companies fail because we got distracted by projects that were enjoyable, great for learning, cool or some combination of the above. I love working on those projects— but when my goal involves money, I'm strict about making sure every task is tied to a business outcome.">
+            business value driven
+          </AboutPopupTrigger>
+        </div>
+      </div>
       <div className="grid gap-8 md:grid-cols-2">
         <ExperienceGroup title="Building Businesses">
           <ExperienceItem
@@ -106,7 +123,7 @@ export default function Portfolio() {
             link="http://dipseastories.com"
             period="2018 - 2024"
             role="Technical Advisor"
-            description="Launched Dipsea's first iOS app. Company acquired by Revenue Cat in 2024."
+            description="Launched Dipsea's first iOS app. Acquired by Revenue Cat in 2024."
           />
           <ExperienceItem
             logo="/twitter-logo.png"
@@ -184,11 +201,8 @@ export default function Portfolio() {
             >
               Olin&apos;s first credited, student taught course
             </Link>
-            .
-          </div>
-          <div className="text-gray-600">
-            Graduated in 2013 with a degree in Engineering and Robotics, GPA of
-            3.74.
+            . Graduated in 2013 with a degree in Engineering and Robotics, GPA
+            of 3.74.
           </div>
         </div>
       </div>
