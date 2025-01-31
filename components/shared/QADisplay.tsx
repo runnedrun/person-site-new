@@ -14,7 +14,6 @@ import { QAPairing } from "@/models/QAPairing"
 import { useState, useEffect } from "react"
 import { Button } from "../ui/button"
 import { Send } from "lucide-react"
-import { Textarea } from "../ui/textarea"
 import { Input } from "../ui/input"
 
 export const QADisplay = () => {

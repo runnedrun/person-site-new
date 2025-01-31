@@ -83,7 +83,7 @@ Remember:
     })
 
     return NextResponse.json({ success: true })
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error processing message", error.message)
     return NextResponse.json(
       { error: "Error processing message" },

@@ -18,8 +18,7 @@ export const CurrentAbout = () => {
             <div>
               <div>
                 Maybe IPOing Twitter, maybe training a cohort of students, maybe
-                making improv comedy. I tend to find that teams are most
-                effective and fun best when they have a shared passion,
+                making improv comedy. My favorite teams have a shared passion,
                 regardless of what it is.
               </div>
               <div className="mt-2 text-sm text-muted-foreground">

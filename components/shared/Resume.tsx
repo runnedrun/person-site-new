@@ -19,9 +19,9 @@ export default function Portfolio() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-4" id="resume">
       <div className="flex justify-center">
-        <div className="text-md w-[800px] pb-4 text-center font-semibold">
+        <div className="text-md max-w-[800px] pb-4 text-center md:font-semibold">
           I started my career at Twitter then went on to launch a few companies
-          by myself and with others. My career themes are:{" "}
+          by myself and with others. My work tends to be:{" "}
           <AboutPopupTrigger popupContent="I built the first real-time messaging experience on Twitter. I built a live meditation studio that served classes with 20K+ users. I built a living coding classroom that let remote teachers do hands on classes with students around the world. I built a live, collaborative document editor for language learners. Honestly, I think I like this stuff because I like debugging and iterating with users in real time.">
             real-time
           </AboutPopupTrigger>
@@ -104,7 +104,7 @@ export default function Portfolio() {
             link="https://hylitepeople.com"
             period="2021 - Present"
             role="Fractional CTO"
-            description="Built and maintained the Hylite app as they grew from $0 to their first enterprise contract."
+            description="Ran engineering for Hylite as they grew from $0 to their first enterprise contract."
           />
           <ExperienceItem
             logoText="O p  e   n"
@@ -140,29 +140,29 @@ export default function Portfolio() {
         <div className="flex gap-2">
           <a
             href="https://yaya.press"
-            className="text-blue-600 hover:underline"
+            className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
           >
             Yaya.press
           </a>
-          <div>- Google Docs for language learners.</div>
+          <div className="shrink"> Google Docs for language learners.</div>
         </div>
         <div className="flex gap-2">
           <a
             href="https://thearcgame.com"
-            className="text-blue-600 hover:underline"
+            className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
           >
             TheArcGame.com
           </a>
-          <div>- Control the arc of history.</div>
+          <div>Control the arc of history.</div>
         </div>
         <div className="flex gap-2">
           <a
             href="https://curtaincall.me"
-            className="text-blue-600 hover:underline"
+            className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
           >
             Curtaincall.me
           </a>
-          <div>- Immersive theatre tool.</div>
+          <div>Immersive theatre tool.</div>
         </div>
       </div>
 

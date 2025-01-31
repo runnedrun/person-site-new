@@ -1,7 +1,7 @@
-import type React from "react"
-import colors, { blue } from "tailwindcss/colors"
-import { useAboutMode } from "./AboutModeContext"
 import { cn } from "@/lib/utils"
+import type React from "react"
+import colors from "tailwindcss/colors"
+import { useAboutMode } from "./AboutModeContext"
 
 const blurAmount = 0.3
 export const GeometricBg: React.FC = () => {
@@ -18,7 +18,7 @@ export const GeometricBg: React.FC = () => {
     >
       {/* Abstract sun drawing */}
       <div
-        className={`absolute h-80 w-80 transition-all duration-1000 ease-in-out ${
+        className={`absolute hidden h-80 w-80 transition-all duration-1000 ease-in-out md:block ${
           aspirationalMode
             ? "-right-20 -top-20 scale-100"
             : "-top-20 right-[calc(100%-12rem)] scale-100"
@@ -65,14 +65,6 @@ export const GeometricBg: React.FC = () => {
           </g>
         </svg>
       </div>
-      {/* Geometric background elements */}
-      {/* <div className="absolute -right-20 -top-20 h-80 w-80 -rotate-12 scale-110 transform rounded-3xl bg-blue-300 opacity-70 mix-blend-multiply blur-xl filter"></div> */}
-      {/* <div className="absolute -bottom-20 -left-20 h-80 w-80 rotate-45 rounded-3xl bg-blue-100 opacity-70 mix-blend-multiply blur-xl filter"></div> */}
-      <div
-        className={cn(
-          "absolute -bottom-20 -right-20 h-56 w-56 -rotate-45 scale-110 transform rounded-full bg-blue-300 opacity-70 mix-blend-multiply blur-xl filter"
-        )}
-      ></div>
     </div>
   )
 }
