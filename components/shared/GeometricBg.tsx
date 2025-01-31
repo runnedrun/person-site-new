@@ -7,15 +7,15 @@ const blurAmount = 0.3
 export const GeometricBg: React.FC = () => {
   const { aspirationalMode } = useAboutMode()
   return (
-    <div
-      className={cn(
-        "relative h-full overflow-hidden bg-blue-50 transition-colors duration-1000 ease-in-out",
-        {
-          "bg-blue-50": !aspirationalMode,
-          "bg-blue-100/75": aspirationalMode,
-        }
-      )}
-    >
+    <div className="relative h-full overflow-hidden">
+      <div
+        className={cn(
+          "absolute h-full w-[200%] transition-transform duration-1000 ease-in-out",
+          aspirationalMode ? "translate-x-[-50%]" : "translate-x-0"
+        )}
+      >
+        <div className="h-full w-full bg-gradient-to-r from-blue-50 via-blue-100/75 to-blue-200" />
+      </div>
       {/* Abstract sun drawing */}
       <div
         className={`absolute hidden h-80 w-80 transition-all duration-1000 ease-in-out md:block ${

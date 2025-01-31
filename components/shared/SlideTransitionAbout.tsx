@@ -15,11 +15,9 @@ export const SlideTransitionAbout = ({
       <div
         className={`flex h-full w-full transition-transform duration-300 ease-in-out ${aspirationalMode ? "-translate-x-full" : "translate-x-0"}`}
       >
-        <div className="flex w-full flex-shrink-0 flex-col gap-4 px-2 pt-2">
+        <div className="flex w-full flex-shrink-0 flex-col gap-8 px-2 pt-2">
           <CurrentAbout />
-          <div className="justify-self-end">
-            <QADisplay />
-          </div>
+          <QADisplay />
         </div>
         <div className="w-full flex-shrink-0 p-2">
           <FutureAbout />

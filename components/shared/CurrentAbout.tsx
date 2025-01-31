@@ -3,7 +3,7 @@ import Link from "next/link"
 
 export const CurrentAbout = () => {
   return (
-    <div className="flex grow flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="">
         I&apos;ve lived in 8 cities on 4 continents. I worked at Twitter through
         its IPO. I spent a lot of my 20&apos;s launching startups, including one

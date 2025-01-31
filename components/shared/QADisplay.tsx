@@ -65,9 +65,9 @@ export const QADisplay = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="flex w-full flex-col gap-4">
       {latestQA && (
-        <div className="space-y-4 rounded-lg p-6 shadow-md">
+        <div className="space-y-4 rounded-lg bg-gray-50 p-6 shadow-md">
           <div className="text-gray-800">
             {latestQA.answeredAt ? (
               latestQA.answer
@@ -89,13 +89,12 @@ export const QADisplay = () => {
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask David Bot a question about himself!"
-            className="w-full resize-none rounded-lg border p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            className="w-full resize-none rounded-lg border border-gray-600 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
           <Button type="submit" disabled={!question.trim()} className="w-12">
             <Send />
           </Button>
         </form>
-        <div className="text-center text-sm text-gray-600">Or</div>
       </div>
     </div>
   )

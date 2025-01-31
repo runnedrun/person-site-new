@@ -42,13 +42,13 @@ export const AboutPopupTrigger = ({
             className={cn(
               "group relative z-50 inline-block cursor-pointer transition-all",
               {
-                "scale-105 bg-blue-100/80": isOpen,
+                "scale-105 bg-blue-100/80 px-1": isOpen,
               }
             )}
           >
             {children}
             {showUnderline && (
-              <div className="mt-0.5 h-[3px] w-full bg-orange-400/60 transition-colors group-hover:bg-orange-500" />
+              <div className="-mt-0.5 h-[2px] w-full bg-orange-400/60 transition-colors group-hover:bg-orange-500" />
             )}
           </div>
         </PopoverTrigger>

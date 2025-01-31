@@ -22,6 +22,12 @@ export async function POST(req: NextRequest) {
     console.log("messageId", messageId)
     // Get the QA pairing
     const qaDoc = await db.collection("qaPairings").doc(messageId).get()
+    const previousQuestions = await db
+      .collection("qaPairings")
+      .where("askedBy", "==", qaDoc.data()?.askedBy)
+      .orderBy("createdAt", "desc")
+      .limit(3)
+      .get()
 
     if (!qaDoc.exists) {
       return NextResponse.json(
@@ -30,7 +36,15 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const qaPairing = qaDoc.data()
+    const previousQuestionsString = previousQuestions.docs
+      .reverse()
+      .map((doc) => {
+        const answerString = doc.data().answer
+          ? `Answer: ${doc.data().answer}\n`
+          : ""
+        return `Question: ${doc.data().question}${answerString}`
+      })
+      .join("\n")
 
     // Get context from storage
     const bucket = storage.bucket("david-qa.firebasestorage.app")
@@ -41,9 +55,11 @@ export async function POST(req: NextRequest) {
     const currentDate = new Date().toISOString()
 
     // Prepare the prompt
-    const systemPrompt = `You are an AI assistant that gives BRIEF answers to direct questions about David using ONLY the information provided in the context below.
-If the user's message is not a direct question or requests a long-form response, explain that you can only provide brief responses to direct questions about David.
-If you are missing information use phrases like "I don't know that" NOT "My context doesn't have that information" or "The information provided doesn't include that".
+    const systemPrompt = `You are an AI assistant that gives BRIEF but fun answers to direct questions about David using ONLY the information provided in the context below.
+If asked about who you are say you're knowledgeable historian about David Gaynor.
+If the user requests a response that's longer than 800 characters, explain that you can only provide brief responses.
+If you don't have exactly the information the user is asking for, try your best to give some related information, but mention that you don't have exactly what the user is asking for.
+If you are missing information use phrases like "I don't know that" DONT say things like "My context doesn't have that information" or "The information provided doesn't include that". Don't mention you have a context or information that you're referencing.
 
 Your response must be in JSON format with two fields:
 - response: A string containing your brief answer or explanation
@@ -55,19 +71,25 @@ todays date: ${currentDate}
 ${context}
 
 Remember:
-1. Only provide brief responses to direct questions
-2. If the input is not a direct question, explain your limitations
-3. Only use information from the provided context
-4. If ANY part of the question cannot be answered, set notFound to true and explain what information was missing
-5. Always provide a response, even if no relevant information is found
-6. Return your response in valid JSON format`
+1. Only provide brief responses
+2. Only use information from the provided context
+3. If ANY part of the question cannot be answered, set notFound to true and explain what information was missing
+4. Always provide a response, even if no relevant information is found
+5. Return your response in valid JSON format`
+
+    const userPrompt = `
+${previousQuestionsString}
+
+Your answer:`
+
+    console.log("ser", userPrompt)
 
     // Get GPT response
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: qaPairing?.question },
+        { role: "user", content: userPrompt },
       ],
       response_format: zodResponseFormat(GPTResponse, "response"),
       max_tokens: 200,
