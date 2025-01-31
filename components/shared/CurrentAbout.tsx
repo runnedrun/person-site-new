@@ -4,7 +4,7 @@ import Link from "next/link"
 export const CurrentAbout = () => {
   return (
     <div className="flex grow flex-col gap-4">
-      <div className="md:text-sm">
+      <div className="">
         I&apos;ve lived in 8 cities on 4 continents. I worked at Twitter through
         its IPO. I spent a lot of my 20&apos;s launching startups, including one
         which was acquired. I&apos;ve enjoyed some success and grown a lot

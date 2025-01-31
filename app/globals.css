@@ -86,3 +86,40 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.abstractBackground {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #e6f3ff;
+  overflow: hidden;
+}
+
+.abstractBackground::before,
+.abstractBackground::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  opacity: 0.4;
+  filter: blur(60px);
+}
+
+.abstractBackground::before {
+  background-color: #4a90e2;
+  top: -50px;
+  left: -50px;
+  box-shadow:
+    400px 400px 0 -50px rgba(99, 179, 237, 0.4),
+    -200px 300px 0 -30px rgba(66, 153, 225, 0.3);
+}
+
+.abstractBackground::after {
+  background-color: #63b3ed;
+  bottom: -50px;
+  right: -50px;
+  box-shadow:
+    -300px -200px 0 -40px rgba(144, 205, 244, 0.4),
+    200px -250px 0 -50px rgba(99, 179, 237, 0.3);
+}

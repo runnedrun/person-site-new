@@ -33,7 +33,7 @@ export const AboutPopupTrigger = ({
     <>
       {isOpen && (
         <div
-          className={`fixed inset-0 z-40 bg-black/50 ${aspirationalMode ? "translate-x-full" : "translate-x-0"}`}
+          className={`fixed inset-0 z-40 ${aspirationalMode ? "translate-x-full" : "translate-x-0"}`}
         />
       )}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -42,7 +42,7 @@ export const AboutPopupTrigger = ({
             className={cn(
               "group relative z-50 inline-block cursor-pointer transition-all",
               {
-                "scale-105 bg-white": isOpen,
+                "scale-105 bg-blue-100/80": isOpen,
               }
             )}
           >

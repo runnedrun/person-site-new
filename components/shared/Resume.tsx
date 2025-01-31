@@ -4,7 +4,6 @@ import ExperienceItem from "./ExperienceItem"
 import ExperienceGroup from "./ExperienceGroup"
 import { useEffect } from "react"
 import { AboutPopupTrigger } from "./AboutPopupTrigger"
-import { About } from "./About"
 
 export default function Portfolio() {
   useEffect(() => {

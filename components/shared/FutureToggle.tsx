@@ -4,16 +4,36 @@ import { useAboutMode } from "@/components/shared/AboutModeContext"
 export function FutureToggle() {
   const { aspirationalMode, setAspirationalMode } = useAboutMode()
 
-  const toggleText = aspirationalMode ? "Aspirational David" : "Now David"
-
   return (
-    <div className="flex flex-col items-center gap-2">
-      <span className={`text-sm font-bold`}>{toggleText}</span>
-      <Switch
-        className="w-12 data-[state=checked]:bg-orange-400 data-[state=unchecked]:bg-input"
-        checked={aspirationalMode}
-        onCheckedChange={setAspirationalMode}
-      />
+    <div className="flex items-center gap-4">
+      <div
+        onClick={() => setAspirationalMode(false)}
+        className={`cursor-pointer px-2 py-1 text-sm font-bold ${
+          !aspirationalMode
+            ? "rounded border-b-2 border-orange-400 bg-orange-100"
+            : "opacity-50"
+        }`}
+      >
+        past
+      </div>
+      <div className="flex items-center">
+        <Switch
+          className="w-12 data-[state=checked]:bg-orange-400 data-[state=unchecked]:bg-input"
+          checked={aspirationalMode}
+          onCheckedChange={setAspirationalMode}
+        />
+        <div className="text-sm text-gray-500">→</div>
+      </div>
+      <div
+        onClick={() => setAspirationalMode(true)}
+        className={`cursor-pointer px-2 py-1 text-sm font-bold ${
+          aspirationalMode
+            ? "rounded border-b-2 border-orange-400 bg-orange-100"
+            : "opacity-50"
+        }`}
+      >
+        future
+      </div>
     </div>
   )
 }

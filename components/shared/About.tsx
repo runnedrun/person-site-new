@@ -9,24 +9,28 @@ export const About = () => {
   const { aspirationalMode } = useAboutMode()
 
   return (
-    <div className="relative flex min-h-0 w-full max-w-[500px] grow flex-col items-center overflow-x-hidden overflow-y-visible">
+    <div className="relative flex min-h-0 w-full max-w-[500px] grow flex-col items-center gap-8 overflow-x-hidden overflow-y-visible">
       <Overlay />
-
-      <SlideTransitionImage aspirationalMode={aspirationalMode} />
-      {/* Contact Links */}
-      <div className="mb-6 mt-2 flex flex-col items-center text-sm">
-        <Link href="https://github.com/runnedrun" className="hover:underline">
-          github.com/runnedrun
-        </Link>
-        <Link href="mailto:runnedrun@gmail.com" className="hover:underline">
-          runnedrun@gmail.com
-        </Link>
-        <Link
-          href="https://www.linkedin.com/in/runnedrun/"
-          className="hover:underline"
-        >
-          linkedin.com/in/runnedrun
-        </Link>
+      <div className="flex flex-wrap items-center gap-8">
+        <SlideTransitionImage aspirationalMode={aspirationalMode} />
+        {/* Contact Links */}
+        <div className="mb-6 mt-2 flex flex-col items-center text-sm">
+          <div className="font-grotesk flex flex-col items-center text-lg font-bold text-orange-600">
+            I'm David Gaynor.
+          </div>
+          <Link href="https://github.com/runnedrun" className="hover:underline">
+            github.com/runnedrun
+          </Link>
+          <Link href="mailto:runnedrun@gmail.com" className="hover:underline">
+            runnedrun@gmail.com
+          </Link>
+          <Link
+            href="https://www.linkedin.com/in/runnedrun/"
+            className="hover:underline"
+          >
+            linkedin.com/in/runnedrun
+          </Link>
+        </div>
       </div>
       {/* Mode Toggle and Sections */}
       <FutureToggle />

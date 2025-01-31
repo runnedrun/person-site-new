@@ -68,7 +68,7 @@ export const QADisplay = () => {
   return (
     <div className="w-full">
       {latestQA && (
-        <div className="space-y-4 rounded-lg bg-white p-6 shadow-md">
+        <div className="space-y-4 rounded-lg p-6 shadow-md">
           <div className="text-gray-800">
             {latestQA.answeredAt ? (
               latestQA.answer
