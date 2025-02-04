@@ -1,3 +1,4 @@
+"use client"
 import { cn } from "@/lib/utils"
 import type React from "react"
 import colors from "tailwindcss/colors"
@@ -18,10 +19,10 @@ export const GeometricBg: React.FC = () => {
       </div>
       {/* Abstract sun drawing */}
       <div
-        className={`absolute hidden h-80 w-80 transition-all duration-1000 ease-in-out md:block ${
+        className={`absolute -top-4 h-16 w-16 scale-100 transition-all duration-1000 ease-in-out md:-top-20 md:block md:h-80 md:w-80 ${
           aspirationalMode
-            ? "-right-20 -top-20 scale-100"
-            : "-top-20 right-[calc(100%-12rem)] scale-100"
+            ? "-right-2 md:-right-20"
+            : "right-[calc(100%-2.2rem)] md:right-[calc(100%-12rem)]"
         }`}
       >
         <svg

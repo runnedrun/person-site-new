@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import ExperienceItem from "./ExperienceItem"
@@ -19,7 +21,7 @@ export default function Portfolio() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-4" id="resume">
       <div className="flex justify-center">
-        <div className="text-md max-w-[800px] pb-4 text-center md:font-semibold">
+        <div className="text-md max-w-[800px] pb-4 text-center text-lg">
           I started my career at Twitter then went on to launch a few companies
           by myself and with others. My work tends to be:{" "}
           <AboutPopupTrigger popupContent="I built the first real-time messaging experience on Twitter. I built a live meditation studio that served classes with 20K+ users. I built a living coding classroom that let remote teachers do hands on classes with students around the world. I built a live, collaborative document editor for language learners. Honestly, I think I like this stuff because I like debugging and iterating with users in real time.">

@@ -1,3 +1,4 @@
+"use client"
 import { useAboutMode } from "@/components/shared/AboutModeContext"
 import { FutureToggle } from "@/components/shared/FutureToggle"
 import Link from "next/link"
@@ -15,7 +16,7 @@ export const About = () => {
         <SlideTransitionImage aspirationalMode={aspirationalMode} />
         {/* Contact Links */}
         <div className="mb-6 mt-2 flex flex-col items-center text-sm">
-          <div className="font-grotesk flex flex-col items-center text-lg font-bold text-orange-600">
+          <div className="flex flex-col items-center font-grotesk text-lg font-bold text-orange-600">
             I'm David Gaynor.
           </div>
           <Link href="https://github.com/runnedrun" className="hover:underline">
@@ -29,6 +30,9 @@ export const About = () => {
             className="hover:underline"
           >
             linkedin.com/in/runnedrun
+          </Link>
+          <Link href="/writing" className="hover:underline">
+            Writing
           </Link>
         </div>
       </div>

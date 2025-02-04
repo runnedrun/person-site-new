@@ -8,7 +8,7 @@ export const SlideTransitionImage = ({
   aspirationalMode,
 }: SlideTransitionImageProps) => {
   return (
-    <div className="relative h-32 w-32 overflow-hidden rounded-full">
+    <div className="relative h-32 w-32 overflow-hidden">
       <div
         className={`flex transition-transform duration-300 ease-in-out ${
           aspirationalMode ? "-translate-x-full" : "translate-x-0"
@@ -16,7 +16,7 @@ export const SlideTransitionImage = ({
       >
         <div className="relative h-32 w-32 flex-shrink-0">
           <Image
-            src="/normal-prof-pic.jpg"
+            src="/no_bg_normal.png"
             alt="Profile Picture"
             fill
             className="object-cover"
@@ -24,10 +24,10 @@ export const SlideTransitionImage = ({
         </div>
         <div className="relative h-32 w-32 flex-shrink-0">
           <Image
-            src="/fun-prof-pic.jpg"
+            src="/no_bg_fun.png"
             alt="Profile Picture"
             fill
-            className="object-cover"
+            className="scale-125 object-cover"
           />
         </div>
       </div>
