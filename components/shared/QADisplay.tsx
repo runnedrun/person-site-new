@@ -1,45 +1,84 @@
 import { init } from "@/helpers/initFb"
-import { useAuthState } from "react-firebase-hooks/auth"
+import { useMDXComponents } from "@/mdx-components"
+import { QAPairing } from "@/data/types/QAPairing"
 import { getAuth, signInAnonymously } from "firebase/auth"
 import {
-  collection,
-  query,
-  orderBy,
-  limit,
   addDoc,
+  collection,
+  orderBy,
+  query,
   Timestamp,
 } from "firebase/firestore"
+import {
+  ArrowDown,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Send,
+} from "lucide-react"
+import { MDXRemote } from "next-mdx-remote"
+import { useEffect, useState } from "react"
+import { useAuthState } from "react-firebase-hooks/auth"
 import { useCollectionData } from "react-firebase-hooks/firestore"
-import { QAPairing } from "@/models/QAPairing"
-import { useState, useEffect } from "react"
 import { Button } from "../ui/button"
-import { Send } from "lucide-react"
 import { Input } from "../ui/input"
+import { DavidSummary } from "./DavidSummary"
 
-export const QADisplay = () => {
-  const db = init()
-  const auth = getAuth()
-  const [user] = useAuthState(auth)
+export const DEFAULT_QUESTION = "Who are you?"
 
-  const [question, setQuestion] = useState("")
+export const QADisplay = ({
+  defaultAnswer,
+}: {
+  defaultAnswer: React.ReactNode
+}) => {
+  const [question, setQuestion] = useState(DEFAULT_QUESTION)
+  const [qaIndex, setQaIndex] = useState(0)
+  const [isLoading, setIsLoading] = useState(false) // Get all QA pairings for user
 
-  // Sign in anonymously if no user
+  const withDefaultQuestion = [
+    {
+      question: DEFAULT_QUESTION,
+      answer: null,
+    },
+    ...(qaPairings ?? []),
+  ]
+
   useEffect(() => {
-    if (!user) {
-      signInAnonymously(auth)
-    }
-  }, [user, auth])
+    setQaIndex(withDefaultQuestion.length - 1)
+  }, [withDefaultQuestion.length])
 
-  // Get latest QA pairing for user
-  const qaQuery = query(
-    collection(db, "qaPairings"),
-    orderBy("createdAt", "desc"),
-    limit(1)
-  )
-  const [qaPairings] = useCollectionData(qaQuery)
-  const latestQA = qaPairings?.[0] as QAPairing | undefined
+  const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing | undefined
+
+  const currentAnsweredQuestion = currentQA?.question
+
+  const currentAnswerIsForCurrentQuestion =
+    currentAnsweredQuestion?.trim() === question?.trim()
+
+  useEffect(() => {
+    if (currentAnsweredQuestion) {
+      setQuestion(currentAnsweredQuestion)
+    }
+  }, [currentAnsweredQuestion])
+
+  console.log("qaPairings", withDefaultQuestion, qaIndex)
+
+  const canGoForward = qaIndex < (withDefaultQuestion?.length ?? 0) - 1
+  const canGoBack = qaIndex > 0
+
+  const navigateQA = (direction: "back" | "forward") => {
+    if (direction === "back" && canGoBack) {
+      setQaIndex(qaIndex - 1)
+    } else if (direction === "forward" && canGoForward) {
+      setQaIndex(qaIndex + 1)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (currentAnswerIsForCurrentQuestion) {
+      return
+    }
+
+    setIsLoading(true)
     e.preventDefault()
     if (!question.trim() || !user) return
 
@@ -55,49 +94,76 @@ export const QADisplay = () => {
     const docRef = await addDoc(collection(db, "qaPairings"), newQA)
 
     // Trigger answer processing
-    fetch("/api/process_message", {
+    await fetch("/api/process_message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messageId: docRef.id }),
     })
+    setIsLoading(false)
+  }
 
-    setQuestion("")
+  const components = useMDXComponents({})
+
+  let submitButton = <Send className="cursor-pointer" onClick={handleSubmit} />
+
+  if (isLoading) {
+    submitButton = <Loader2 />
+  } else if (currentAnswerIsForCurrentQuestion) {
+    submitButton = <ArrowDown />
   }
 
   return (
     <div className="flex w-full flex-col gap-4">
-      {latestQA && (
-        <div className="space-y-4 rounded-lg bg-gray-50 p-6 shadow-md">
-          <div className="text-gray-800">
-            {latestQA.answeredAt ? (
-              latestQA.answer
-            ) : (
-              <div className="flex items-center gap-1">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]"></span>
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]"></span>
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400"></span>
-              </div>
-            )}
-          </div>
-          <div className="border-t pt-4 italic text-gray-600">
-            {latestQA.question}
-          </div>
-        </div>
-      )}
+      <DavidSummary />
 
-      <div className="flex flex-col gap-2">
-        <form onSubmit={handleSubmit} className="flex items-end gap-2">
-          <Input
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask David Bot a question about himself!"
-            className="w-full resize-none rounded-lg border border-gray-600 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-          />
-          <Button type="submit" disabled={!question.trim()} className="w-12">
-            <Send />
-          </Button>
-        </form>
+      <div className="w-full text-center font-bold">
+        Ask David Bot some questions!
       </div>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          onClick={() => navigateQA("back")}
+          disabled={!canGoBack}
+        >
+          <ChevronLeft />
+        </Button>
+        <Input
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit(e)
+            }
+          }}
+          value={question}
+          disabled={isLoading}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask David Bot a question about himself!"
+          className="w-full resize-none rounded-lg bg-transparent p-3 focus:ring-2 focus:ring-blue-500"
+        />
+        {submitButton}
+
+        <Button
+          variant="ghost"
+          onClick={() => navigateQA("forward")}
+          disabled={!canGoForward}
+        >
+          <ChevronRight />
+        </Button>
+      </div>
+
+      {currentQA ? (
+        <div>
+          {currentQA.answeredAt ? (
+            <MDXRemote
+              {...currentQA.serializedAnswer}
+              components={components}
+            />
+          ) : (
+            defaultAnswer
+          )}
+        </div>
+      ) : (
+        defaultAnswer
+      )}
     </div>
   )
 }

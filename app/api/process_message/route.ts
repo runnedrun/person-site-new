@@ -2,11 +2,13 @@ import { getOpenAIClient } from "@/helpers/getOpenAIClient"
 import { getBeAppNext } from "@/helpers/initFbBe"
 import { NextRequest, NextResponse } from "next/server"
 import { getStorage } from "firebase-admin/storage"
-import { getFirestore } from "firebase-admin/firestore"
+import { getFirestore, Timestamp } from "firebase-admin/firestore"
 import { zodResponseFormat } from "openai/helpers/zod"
 import { GPTResponse } from "@/models/GPTResponse"
 
 import { createLogger, format, transports } from "winston"
+import { serialize } from "next-mdx-remote/serialize"
+import { QAPairing } from "@/data/types/QAPairing"
 const { combine, errors, timestamp } = format
 
 const baseFormat = combine(
@@ -126,11 +128,15 @@ Your answer, as if you are David:`
     const gptResponse = JSON.parse(completion.choices[0].message.content ?? "")
 
     // Update QA pairing with response
-    await db.collection("qaPairings").doc(messageId).update({
-      answer: gptResponse.response,
-      notFound: gptResponse.notFound,
-      answeredAt: new Date(),
-    })
+    await db
+      .collection("qaPairings")
+      .doc(messageId)
+      .update({
+        answer: gptResponse.response,
+        serializedAnswer: await serialize(gptResponse.response),
+        notFound: gptResponse.notFound,
+        answeredAt: Timestamp.now(),
+      } as Partial<QAPairing>)
 
     return NextResponse.json({ success: true })
   } catch (error: any) {

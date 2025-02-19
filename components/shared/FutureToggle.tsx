@@ -14,7 +14,7 @@ export function FutureToggle() {
             : "opacity-50"
         }`}
       >
-        past
+        now
       </div>
       <div className="flex items-center">
         <Switch

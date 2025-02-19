@@ -75,13 +75,13 @@ export const FutureAbout = () => {
             In most of my work I get paid to do things I&apos;ve done in the
             past, but this time with fewer mistakes. It has it&apos;s pros
             (flexible hours, remote work), but one downside is I learn from and
-            and rely on my peers less than I&apos;d like.
+            rely on my peers less than I&apos;d like.
           </div>
         }
       />
 
       <TextWithProgress
-        content="I'd like to help my team love their work as much as I do."
+        content="I'd like to create an awesome environment for those I work with."
         progress={65}
         progressPopupContent={
           <div>
@@ -101,8 +101,8 @@ export const FutureAbout = () => {
             <div>
               Wow what a world we live in. It seems possible that some parts of
               my life will, for reasons beyond my control, be worse in 5 years
-              than now. At the least, The AI products I help create will start
-              to eat my job.
+              than now. At the very least, the AI products I help create will
+              start to eat my job.
             </div>
             <div className="mt-2">
               I want to be OK with this. Because, while I can influence the

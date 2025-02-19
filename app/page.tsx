@@ -46,7 +46,6 @@ export default function Home() {
 export async function generateMetadata() {
   return {
     title: "All About David Gaynor",
-    description:
-      "Hi I'm David. Here's a bunch of information about me— free of charge!",
+    description: "Hi I'm David. Here's a bunch of information about me.",
   }
 }
