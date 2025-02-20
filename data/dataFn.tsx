@@ -1,4 +1,4 @@
-import { DataFnType } from "./serverComponent"
+import { DataFnType } from "./rootComponent"
 
 export const dataFn =
   <

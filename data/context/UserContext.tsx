@@ -7,7 +7,7 @@ import {
   signInAnonymously,
 } from "firebase/auth"
 import { createContext, ReactNode, useState, useEffect } from "react"
-import { init } from "../initFb"
+import { init } from "../helpers/initFb"
 
 // Create a separate type for the user context
 export type UserContextType = {

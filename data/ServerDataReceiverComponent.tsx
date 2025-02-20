@@ -1,5 +1,5 @@
 import { DataWithoutStatics } from "./DataWithStatics"
-import { ComponentWithInitialValues, DataFnType } from "./serverComponent"
+import { ComponentWithInitialValues, DataFnType } from "./rootComponent"
 
 export type ServerDataReceiverComponent<
   InputDataFnsType extends Record<string, DataFnType>,

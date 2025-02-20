@@ -6,9 +6,9 @@ import {
   useRouterInfoNext13,
 } from "./useRouterInfo"
 
-export type SearchParamSetter<ParamName extends string> = (
+export type SearchParamSetter<ParamName extends string | number | symbol> = (
   param: ParamName,
-  value: string
+  value: string | null | undefined
 ) => void
 
 export const useSearchParamSetterNext12 = <
@@ -17,19 +17,25 @@ export const useSearchParamSetterNext12 = <
   return useSearchParamSetterBase<ParamName>(useRouterInfoNext12())
 }
 
-export const useSearchParamSetter = <ParamName extends string = string>() => {
+export const useSearchParamSetter = <
+  ParamName extends string | number | symbol = string | number | symbol,
+>() => {
   return useSearchParamSetterBase<ParamName>(useRouterInfoNext13())
 }
 
-export const useSearchParamSetterBase = <ParamName extends string = string>(
+export const useSearchParamSetterBase = <
+  ParamName extends string | number | symbol = string | number | symbol,
+>(
   routerInfo: RouterInfo
 ): SearchParamSetter<ParamName> => {
   const { pathname, searchParams, router } = routerInfo
   const createQueryString = useCallback(
-    (name: ParamName, value: string) => {
+    (name: ParamName, value: string | null | undefined) => {
       const params = new URLSearchParams(searchParams)
 
-      isNil(value) ? params.delete(name) : params.set(name, value)
+      isNil(value)
+        ? params.delete(name as string)
+        : params.set(name as string, value)
 
       return params.toString()
     },
@@ -37,7 +43,7 @@ export const useSearchParamSetterBase = <ParamName extends string = string>(
   )
 
   return useCallback(
-    (paramName: ParamName, paramValue: string) => {
+    (paramName: ParamName, paramValue: string | null | undefined) => {
       router.replace(pathname + "?" + createQueryString(paramName, paramValue))
     },
     [router, createQueryString]

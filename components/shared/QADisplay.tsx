@@ -1,53 +1,61 @@
-import { init } from "@/helpers/initFb"
-import { useMDXComponents } from "@/mdx-components"
+import { UserContext } from "@/data/context/UserContext"
+import { isNotNil } from "@/data/helpers/isUndefTyped"
+import { queryObs } from "@/data/readerFe"
 import { QAPairing } from "@/data/types/QAPairing"
-import { getAuth, signInAnonymously } from "firebase/auth"
-import {
-  addDoc,
-  collection,
-  orderBy,
-  query,
-  Timestamp,
-} from "firebase/firestore"
-import {
-  ArrowDown,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  Send,
-} from "lucide-react"
-import { MDXRemote } from "next-mdx-remote"
-import { useEffect, useState } from "react"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { useCollectionData } from "react-firebase-hooks/firestore"
+import { useObs } from "@/data/useObs"
+import { fbCreate } from "@/data/writerFe"
+import { useMDXComponents } from "@/mdx-components"
+import { Timestamp } from "firebase/firestore"
+import { uniqBy } from "lodash"
+import { ArrowDown, ChevronLeft, ChevronRight, Send } from "lucide-react"
+import { MDXRemote as MDXRemoteClient } from "next-mdx-remote"
+import { useContext, useEffect, useState } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
+import { LoadingBounce } from "../ui/loading-bounce"
+import { LoadingSpinner } from "../ui/loading-spinner"
+import { AboutContext } from "./AboutPageWrapper"
+import { CurrentAbout } from "./CurrentAbout"
 import { DavidSummary } from "./DavidSummary"
 
 export const DEFAULT_QUESTION = "Who are you?"
 
-export const QADisplay = ({
-  defaultAnswer,
-}: {
-  defaultAnswer: React.ReactNode
-}) => {
+export const QADisplay = () => {
+  const { startingQA, setParam } = useContext(AboutContext)
+  const { user } = useContext(UserContext)
+
+  const qaPairings = useObs(
+    user
+      ? queryObs("qaPairings", ({ where }) => {
+          return [where("askedBy", "==", user.uid)]
+        })
+      : null,
+    []
+  )
+
+  const defaultQA: Partial<QAPairing> = {
+    question: DEFAULT_QUESTION,
+    answer: null,
+    uid: undefined,
+  }
+
+  const withDefaultQuestion = uniqBy(
+    [defaultQA, startingQA, ...(qaPairings ?? [])].filter(isNotNil),
+    (_) => _.uid
+  )
+
   const [question, setQuestion] = useState(DEFAULT_QUESTION)
-  const [qaIndex, setQaIndex] = useState(0)
+  const [qaIndex, setQaIndex] = useState(withDefaultQuestion.length - 1)
   const [isLoading, setIsLoading] = useState(false) // Get all QA pairings for user
 
-  const withDefaultQuestion = [
-    {
-      question: DEFAULT_QUESTION,
-      answer: null,
-    },
-    ...(qaPairings ?? []),
-  ]
+  const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing
 
   useEffect(() => {
-    setQaIndex(withDefaultQuestion.length - 1)
-  }, [withDefaultQuestion.length])
-
-  const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing | undefined
+    if (currentQA?.uid) {
+      console.log("setting selectedQAId", currentQA.uid)
+      setParam("selectedQAId", currentQA.uid)
+    }
+  }, [currentQA])
 
   const currentAnsweredQuestion = currentQA?.question
 
@@ -59,8 +67,6 @@ export const QADisplay = ({
       setQuestion(currentAnsweredQuestion)
     }
   }, [currentAnsweredQuestion])
-
-  console.log("qaPairings", withDefaultQuestion, qaIndex)
 
   const canGoForward = qaIndex < (withDefaultQuestion?.length ?? 0) - 1
   const canGoBack = qaIndex > 0
@@ -83,21 +89,25 @@ export const QADisplay = ({
     if (!question.trim() || !user) return
 
     // Create new QA pairing
-    const newQA = {
+    const newQA: QAPairing = {
       question,
       answer: "",
       askedBy: user.uid,
       createdAt: Timestamp.now(),
       answeredAt: null,
+      notFound: null,
+      serializedAnswer: null,
     }
 
-    const docRef = await addDoc(collection(db, "qaPairings"), newQA)
+    setQaIndex(qaIndex + 1)
+
+    const ref = await fbCreate("qaPairings", newQA)
 
     // Trigger answer processing
     await fetch("/api/process_message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messageId: docRef.id }),
+      body: JSON.stringify({ messageId: ref.id }),
     })
     setIsLoading(false)
   }
@@ -107,15 +117,30 @@ export const QADisplay = ({
   let submitButton = <Send className="cursor-pointer" onClick={handleSubmit} />
 
   if (isLoading) {
-    submitButton = <Loader2 />
+    submitButton = <LoadingSpinner className="h-4 w-4" />
   } else if (currentAnswerIsForCurrentQuestion) {
     submitButton = <ArrowDown />
+  }
+
+  const display = (qa: Partial<QAPairing>) => {
+    if (qa.answeredAt && qa.serializedAnswer && qa.answer) {
+      return (
+        <MDXRemoteClient {...qa.serializedAnswer} components={components} />
+      )
+    } else if (qa.question === DEFAULT_QUESTION) {
+      return <CurrentAbout />
+    } else {
+      return (
+        <div className="flex h-full w-full items-center justify-center">
+          <LoadingBounce />
+        </div>
+      )
+    }
   }
 
   return (
     <div className="flex w-full flex-col gap-4">
       <DavidSummary />
-
       <div className="w-full text-center font-bold">
         Ask David Bot some questions!
       </div>
@@ -137,7 +162,7 @@ export const QADisplay = ({
           disabled={isLoading}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Ask David Bot a question about himself!"
-          className="w-full resize-none rounded-lg bg-transparent p-3 focus:ring-2 focus:ring-blue-500"
+          className="w-full resize-none rounded-lg bg-white bg-opacity-30 p-3 focus:ring-2 focus:ring-blue-500"
         />
         {submitButton}
 
@@ -149,21 +174,20 @@ export const QADisplay = ({
           <ChevronRight />
         </Button>
       </div>
-
-      {currentQA ? (
-        <div>
-          {currentQA.answeredAt ? (
-            <MDXRemote
-              {...currentQA.serializedAnswer}
-              components={components}
-            />
-          ) : (
-            defaultAnswer
-          )}
+      <div className="relative w-full overflow-hidden">
+        <div
+          className="flex transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(-${qaIndex * 100}%)` }}
+        >
+          {withDefaultQuestion.map((qa) => {
+            return (
+              <div key={qa.uid || "default"} className="w-full flex-shrink-0">
+                {display(qa)}
+              </div>
+            )
+          })}
         </div>
-      ) : (
-        defaultAnswer
-      )}
+      </div>
     </div>
   )
 }

@@ -55,7 +55,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     // Horizontal rule
     hr: () => <div className="my-8 border-t border-gray-300" />,
     PlaceTimeline: PlaceTimeline,
-    AboutPopupTrigger: AboutPopupTrigger,
+    AboutPopupDetails: AboutPopupTrigger,
     MyTimeline: MyTimeline,
   }
 }

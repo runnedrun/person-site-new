@@ -46,7 +46,7 @@ export const init = () => {
 
   if (demoMode) {
     connectFirestoreEmulator(db, "localhost", 8072)
-    connectStorageEmulator(storage, "localhost", 9190)
+    // connectStorageEmulator(storage, "localhost", 9190)
     connectAuthEmulator(getAuth(), "http://localhost:9090", {
       disableWarnings: true,
     })

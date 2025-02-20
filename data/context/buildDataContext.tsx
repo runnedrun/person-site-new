@@ -2,20 +2,22 @@
 
 import { createContext } from "react"
 import { DataWithStatics } from "../DataWithStatics"
-import { DataFnType } from "../serverComponent"
+import { DataFnType } from "../rootComponent"
 import { useSearchParamSetter } from "../useSearchParamSetter"
 import { ParamsTypeFromDataFn, withData } from "../withData"
 
 export const buildDataContext = <DataFn extends DataFnType>(dataFn: DataFn) => {
   type DataObjType = DataWithStatics<ReturnType<DataFn>>
   type ParamsType = ParamsTypeFromDataFn<DataFn>
-  type KeyType = keyof ParamsType extends string ? keyof ParamsType : never
+  type KeyType = keyof ParamsType extends string | number | symbol
+    ? keyof ParamsType
+    : never
 
   const newContext = createContext({
     setParam: () => {},
     _isLoading: true,
   } as DataObjType & {
-    setParam: (name: keyof ParamsType, value: string) => void
+    setParam: (name: keyof ParamsType, value: string | null | undefined) => void
     _isLoading: boolean
   })
   const Provider = newContext.Provider

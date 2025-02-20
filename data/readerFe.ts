@@ -11,7 +11,6 @@ import {
 } from "rxjs"
 
 import { AllModels } from "@/data/CollectionModels"
-import { init } from "@/data/initFb"
 import {
   and,
   collection,
@@ -46,6 +45,7 @@ import {
 import { isArray, isEqual, isNil, isNull, isUndefined, partition } from "lodash"
 import { ValuesType } from "utility-types"
 import { isNotUndefined, isUndefTyped } from "./helpers/isUndefTyped"
+import { init } from "./helpers/initFb"
 
 const DEFAULT_OPTIONS = { includeMetadataChanges: true }
 
@@ -91,7 +91,7 @@ export const readDoc = async <CollectionName extends keyof AllModels>(
 
 export const docObs = <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
-  id: string | Observable<string>
+  id: string | Observable<string | null>
 ): Observable<AllModels[CollectionName] | null> => {
   if (isNull(id)) {
     return of(null)
@@ -225,7 +225,6 @@ const whereWithObservable = (
           isUndefined(_) &&
             console.warn("Warning: undefined value for", fieldPath)
           if (isSkip(_)) {
-            console.log("ADKL SKIP")
             return of(null)
           }
           return isUndefined(_)

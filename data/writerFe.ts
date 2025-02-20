@@ -13,8 +13,8 @@ import {
   writeBatch,
 } from "firebase/firestore"
 import { chunk } from "lodash"
-import { init } from "./initFb"
 import { getUuid } from "@/data/helpers/getUuid"
+import { init } from "./helpers/initFb"
 
 export const genExtraData = () => {
   return {

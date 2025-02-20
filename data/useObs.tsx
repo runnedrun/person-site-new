@@ -1,3 +1,4 @@
+import { isNull } from "lodash"
 import { useEffect, useState } from "react"
 import { Observable } from "rxjs"
 
@@ -9,13 +10,18 @@ import { Observable } from "rxjs"
  * @returns {DataType | null} The latest value emitted by the Observable, or null if no value has been emitted
  */
 export const useObs = <DataType extends unknown>(
-  observable: Observable<DataType>,
+  observable: Observable<DataType> | null,
   deps: unknown[]
 ) => {
   // Store the latest emitted value, initially null
   const [value, setValue] = useState<DataType | null>(null)
 
+  const depsToUse = deps || []
+
   useEffect(() => {
+    if (isNull(observable)) {
+      return
+    }
     // Subscribe to the observable and update state when new values arrive
     const subscription = observable.subscribe((newValue) => {
       setValue(newValue)
@@ -23,7 +29,7 @@ export const useObs = <DataType extends unknown>(
 
     // Cleanup: unsubscribe when the component unmounts or deps change
     return () => subscription.unsubscribe()
-  }, deps || []) // Use provided deps or empty array for mount-only subscription
+  }, [...depsToUse, isNull(observable)]) // Use provided deps or empty array for mount-only subscription
 
   return value
 }

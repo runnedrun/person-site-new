@@ -16,7 +16,7 @@ import {
   buildKeyGetterFromObs,
   DataFnType,
   PassFromServerToClientProp,
-} from "./serverComponent"
+} from "./rootComponent"
 import { useSearchParamSetter } from "./useSearchParamSetter"
 
 type WithDataOptions = {
@@ -53,7 +53,7 @@ type ComponentProps<
 > = {
   data: DataWithStatics<DataType>
 } & StaticProps & {
-    setParam: (name: keyof Params, value: string) => void
+    setParam: (name: keyof Params, value: string | null | undefined) => void
     _isLoading: boolean
   }
 type TopLevelReturnComponentProps<DataFn extends DataFnType> =

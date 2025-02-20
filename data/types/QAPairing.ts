@@ -5,9 +5,9 @@ import { Model } from "../baseTypes/Model"
 export type QAPairing = Model<{
   createdAt: Timestamp
   question: string
-  answer: string
+  answer: string | null
   askedBy: string // userId
-  notFound: boolean
-  answeredAt: Timestamp
-  serializedAnswer: MDXRemoteSerializeResult
+  notFound: boolean | null
+  answeredAt: Timestamp | null
+  serializedAnswer: MDXRemoteSerializeResult | null
 }>

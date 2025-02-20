@@ -1,17 +1,16 @@
 "use client"
 import { useAboutMode } from "@/components/shared/AboutModeContext"
 import { FutureToggle } from "@/components/shared/FutureToggle"
-import Link from "next/link"
 import { Overlay } from "./Overlay"
 import { SlideTransitionAbout } from "./SlideTransitionAbout"
-import { SlideTransitionImage } from "./SlideTransitionImage"
 import { SlideTransitionContactInfo } from "./SlideTransitionContactInfo"
+import { SlideTransitionImage } from "./SlideTransitionImage"
 
 export const About = () => {
   const { aspirationalMode } = useAboutMode()
 
   return (
-    <div className="relative flex min-h-0 w-full max-w-[500px] grow flex-col items-center gap-8 overflow-x-hidden overflow-y-visible">
+    <div className="relative flex min-h-0 w-full grow flex-col items-center gap-8 overflow-x-hidden overflow-y-visible md:max-w-[500px]">
       <Overlay />
       <div className="flex flex-wrap items-center gap-8">
         <div>
@@ -25,7 +24,7 @@ export const About = () => {
       </div>
       {/* Mode Toggle and Sections */}
 
-      <div className="z-50 flex min-h-0 grow flex-col">
+      <div className="z-50 flex min-h-0 w-full grow flex-col">
         <SlideTransitionAbout aspirationalMode={aspirationalMode} />
       </div>
     </div>

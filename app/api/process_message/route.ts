@@ -9,6 +9,7 @@ import { GPTResponse } from "@/models/GPTResponse"
 import { createLogger, format, transports } from "winston"
 import { serialize } from "next-mdx-remote/serialize"
 import { QAPairing } from "@/data/types/QAPairing"
+import { answerFormatExplanation } from "./answerFormatExplanation"
 const { combine, errors, timestamp } = format
 
 const baseFormat = combine(
@@ -90,8 +91,10 @@ If the user requests a response that's longer than 800 characters, explain that 
 If you don't have exactly the information the user is asking for, try your best to give some related information, but call out the information you don't have explicitly.
 If you are missing information use phrases like "I don't know that" DONT say things like "My context doesn't have that information" or "The information provided doesn't include that". Don't mention you have a context or information that you're referencing.
 
+${answerFormatExplanation}
+
 Your response must be in JSON format with two fields:
-- response: A string containing your brief answer or explanation
+- response: An MDX string containing your brief answer or explanation
 - notFound: A boolean that should be true if ANY requested information is not found in the context
 
 Context:
@@ -112,7 +115,7 @@ ${previousQuestionsString}
 
 Your answer, as if you are David:`
 
-    console.log("ser", userPrompt)
+    console.log("ser", systemPrompt)
 
     // Get GPT response
     const completion = await openai.chat.completions.create({

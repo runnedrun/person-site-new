@@ -37,8 +37,8 @@ export type DataFnType<
   ParamsType extends Record<string, unknown> = any,
   PropsType extends Record<string, unknown> = any,
 > = (args: {
-  getParam?: GetObsForArgFn<ParamsType>
-  getProp?: GetObsForArgFn<PropsType>
+  getParam: GetObsForArgFn<ParamsType>
+  getProp: GetObsForArgFn<PropsType>
 }) => DataType & { _deps?: unknown[] }
 
 export const buildKeyGetterFromObs = <
@@ -74,13 +74,18 @@ export const rootComponent = <
     params,
     searchParams,
   }: {
-    params: Record<string, any>
-    searchParams: Record<string, any>
+    params: Promise<Record<string, any>>
+    searchParams: Promise<Record<string, any>>
   }) => {
     const res = {} as Record<string, unknown>
+    const resolvedParams = await params
+    const resolvedSearchParams = await searchParams
+
     const dataPromises = Object.keys(dataFns).map(async (dataFnName) => {
       const dataObj = dataFns[dataFnName]({
-        getParam: buildKeyGetterFromObs(of({ params, ...searchParams })),
+        getParam: buildKeyGetterFromObs(
+          of({ ...resolvedParams, ...resolvedSearchParams })
+        ),
         getProp: buildKeyGetterFromObs(of({})),
       })
 
@@ -100,7 +105,7 @@ export const rootComponent = <
             >
           }
         }
-        params={{ ...params, ...searchParams }}
+        params={{ ...resolvedParams, ...resolvedSearchParams }}
       ></ClientComponent>
     )
   }
