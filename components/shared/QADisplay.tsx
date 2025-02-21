@@ -5,7 +5,7 @@ import { QAPairing } from "@/data/types/QAPairing"
 import { useObs } from "@/data/useObs"
 import { fbCreate } from "@/data/writerFe"
 import { useMDXComponents } from "@/mdx-components"
-import { Timestamp } from "firebase/firestore"
+import { orderBy, Timestamp } from "firebase/firestore"
 import { uniqBy } from "lodash"
 import { ArrowDown, ChevronLeft, ChevronRight, Send } from "lucide-react"
 import { MDXRemote as MDXRemoteClient } from "next-mdx-remote"
@@ -27,7 +27,7 @@ export const QADisplay = () => {
   const qaPairings = useObs(
     user
       ? queryObs("qaPairings", ({ where }) => {
-          return [where("askedBy", "==", user.uid)]
+          return [where("askedBy", "==", user.uid), orderBy("createdAt", "asc")]
         })
       : null,
     []
@@ -39,10 +39,14 @@ export const QADisplay = () => {
     uid: undefined,
   }
 
-  const withDefaultQuestion = uniqBy(
-    [defaultQA, startingQA, ...(qaPairings ?? [])].filter(isNotNil),
-    (_) => _.uid
+  const allPairings = [defaultQA, startingQA, ...(qaPairings ?? [])].filter(
+    isNotNil
   )
+
+  const withDefaultQuestion = uniqBy(
+    allPairings.reverse(),
+    (_) => _.uid
+  ).reverse()
 
   const [question, setQuestion] = useState(DEFAULT_QUESTION)
   const [qaIndex, setQaIndex] = useState(withDefaultQuestion.length - 1)
@@ -55,7 +59,7 @@ export const QADisplay = () => {
       console.log("setting selectedQAId", currentQA.uid)
       setParam("selectedQAId", currentQA.uid)
     }
-  }, [currentQA])
+  }, [currentQA?.uid])
 
   const currentAnsweredQuestion = currentQA?.question
 
@@ -99,7 +103,7 @@ export const QADisplay = () => {
       serializedAnswer: null,
     }
 
-    setQaIndex(qaIndex + 1)
+    setQaIndex(withDefaultQuestion.length)
 
     const ref = await fbCreate("qaPairings", newQA)
 

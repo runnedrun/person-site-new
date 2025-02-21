@@ -2,6 +2,7 @@ import type { MDXComponents } from "mdx/types"
 import { PlaceTimeline } from "./components/shared/PlaceTimeline"
 import { AboutPopupTrigger } from "./components/shared/AboutPopupTrigger"
 import { MyTimeline } from "./components/shared/MyTimeline"
+import { AboutPopupDetails } from "./components/shared/AboutPopupDetails"
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -55,7 +56,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     // Horizontal rule
     hr: () => <div className="my-8 border-t border-gray-300" />,
     PlaceTimeline: PlaceTimeline,
-    AboutPopupDetails: AboutPopupTrigger,
+    AboutPopupDetails: AboutPopupDetails,
     MyTimeline: MyTimeline,
   }
 }

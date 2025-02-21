@@ -1,15 +1,14 @@
-import { getOpenAIClient } from "@/helpers/getOpenAIClient"
 import { getBeAppNext } from "@/helpers/initFbBe"
 import { NextRequest, NextResponse } from "next/server"
 import { getStorage } from "firebase-admin/storage"
 import { getFirestore, Timestamp } from "firebase-admin/firestore"
-import { zodResponseFormat } from "openai/helpers/zod"
-import { GPTResponse } from "@/models/GPTResponse"
 
 import { createLogger, format, transports } from "winston"
 import { serialize } from "next-mdx-remote/serialize"
 import { QAPairing } from "@/data/types/QAPairing"
 import { answerFormatExplanation } from "./answerFormatExplanation"
+import Anthropic from "@anthropic-ai/sdk"
+import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs"
 const { combine, errors, timestamp } = format
 
 const baseFormat = combine(
@@ -20,8 +19,6 @@ const baseFormat = combine(
     return info
   })()
 )
-
-// const splunkFormat = combine(baseFormat, format.json())
 
 const prettyFormat = combine(baseFormat, format.prettyPrint())
 
@@ -39,7 +36,9 @@ export type ProcessMessageArgs = {
 
 export async function POST(req: NextRequest) {
   try {
-    const openai = getOpenAIClient()
+    const anthropic = new Anthropic({
+      apiKey: process.env.CLAUDE_API_KEY,
+    })
     const app = getBeAppNext()
     const db = getFirestore(app)
     const storage = getStorage(app)
@@ -93,9 +92,6 @@ If you are missing information use phrases like "I don't know that" DONT say thi
 
 ${answerFormatExplanation}
 
-Your response must be in JSON format with two fields:
-- response: An MDX string containing your brief answer or explanation
-- notFound: A boolean that should be true if ANY requested information is not found in the context
 
 Context:
 todays date: ${currentDate}
@@ -105,39 +101,36 @@ ${context}
 Remember:
 1. Only provide brief responses
 2. Only use information from the provided context
-3. If ANY part of the question cannot be answered, set notFound to true and explain what information was missing
-4. Always provide a response, even if no relevant information is found
-5. Answer in the first person, as if you are David.
-6. Return your response in valid JSON format`
+3. Always provide a response, even if no relevant information is found
+4. Answer in the first person, as if you are David.
+5. Return your response in valid JSON format`
 
     const userPrompt = `
 ${previousQuestionsString}
 
 Your answer, as if you are David:`
 
-    console.log("ser", systemPrompt)
-
-    // Get GPT response
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+    // Get Claude response
+    const completion = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-latest",
+      max_tokens: 400,
       messages: [
-        { role: "system", content: systemPrompt },
+        { role: "assistant", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      response_format: zodResponseFormat(GPTResponse, "response"),
-      max_tokens: 200,
     })
 
-    const gptResponse = JSON.parse(completion.choices[0].message.content ?? "")
+    const claudeResponse = (completion.content[0] as TextBlock).text
+
+    console.log("claudeResponse", claudeResponse)
 
     // Update QA pairing with response
     await db
       .collection("qaPairings")
       .doc(messageId)
       .update({
-        answer: gptResponse.response,
-        serializedAnswer: await serialize(gptResponse.response),
-        notFound: gptResponse.notFound,
+        answer: claudeResponse,
+        serializedAnswer: await serialize(claudeResponse),
         answeredAt: Timestamp.now(),
       } as Partial<QAPairing>)
 

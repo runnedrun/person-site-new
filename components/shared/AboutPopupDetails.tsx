@@ -7,7 +7,7 @@ export const AboutPopupDetails = ({
   children,
 }: {
   details: string
-  relatedContentLinks: { href: string; title: string }[]
+  relatedContentLinks?: { href: string; title: string }[]
   children: React.ReactNode
 }) => {
   return (
@@ -16,7 +16,7 @@ export const AboutPopupDetails = ({
         popupContent={
           <div>
             <div>{details}</div>
-            {relatedContentLinks.length > 0 && (
+            {relatedContentLinks?.length && (
               <div className="mt-2 text-sm text-muted-foreground">
                 Related Essays:{" "}
                 {relatedContentLinks.map((link) => (
