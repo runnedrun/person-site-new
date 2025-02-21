@@ -17,6 +17,8 @@ import { LoadingSpinner } from "../ui/loading-spinner"
 import { AboutContext } from "./AboutPageWrapper"
 import { CurrentAbout } from "./CurrentAbout"
 import { DavidSummary } from "./DavidSummary"
+import { Textarea } from "../ui/textarea"
+import { AutosizeTextarea } from "../ui/AutoGrowTextArea"
 
 export const DEFAULT_QUESTION = "Who are you?"
 
@@ -43,16 +45,29 @@ export const QADisplay = () => {
     isNotNil
   )
 
+  console.log("stsar", startingQA)
+
+  // todo handle when the other QAs take some time to load
+
   const withDefaultQuestion = uniqBy(
     allPairings.reverse(),
     (_) => _.uid
   ).reverse()
 
+  const startingIndex = startingQA
+    ? withDefaultQuestion.findIndex((qa) => qa.uid === startingQA.uid)
+    : withDefaultQuestion.length - 1
+
+  console.log("startingIndex", startingIndex)
+
   const [question, setQuestion] = useState(DEFAULT_QUESTION)
-  const [qaIndex, setQaIndex] = useState(withDefaultQuestion.length - 1)
+  const [qaIndex, setQaIndex] = useState(startingIndex)
   const [isLoading, setIsLoading] = useState(false) // Get all QA pairings for user
 
   const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing
+
+  console.log("currentQA", currentQA)
+  console.log("qaIndex", qaIndex)
 
   useEffect(() => {
     if (currentQA?.uid) {
@@ -156,7 +171,9 @@ export const QADisplay = () => {
         >
           <ChevronLeft />
         </Button>
-        <Input
+        <AutosizeTextarea
+          rows={1}
+          minHeight={30}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSubmit(e)
@@ -166,7 +183,7 @@ export const QADisplay = () => {
           disabled={isLoading}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Ask David Bot a question about himself!"
-          className="w-full resize-none rounded-lg bg-white bg-opacity-30 p-3 focus:ring-2 focus:ring-blue-500"
+          className="min-h-[30px] w-full resize-none rounded-lg bg-white bg-opacity-30 p-2 focus:ring-2 focus:ring-blue-500"
         />
         {submitButton}
 

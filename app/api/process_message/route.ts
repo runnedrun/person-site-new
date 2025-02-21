@@ -8,7 +8,8 @@ import { serialize } from "next-mdx-remote/serialize"
 import { QAPairing } from "@/data/types/QAPairing"
 import { answerFormatExplanation } from "./answerFormatExplanation"
 import Anthropic from "@anthropic-ai/sdk"
-import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs"
+import { TextBlock, ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs"
+import { URLReaderImpl, URLReaderInput } from "@/lib/tools/URLReaderImpl"
 const { combine, errors, timestamp } = format
 
 const baseFormat = combine(
@@ -36,6 +37,44 @@ export type ProcessMessageArgs = {
 
 export async function POST(req: NextRequest) {
   try {
+    const urlReader = new URLReaderImpl({
+      allowedDomains: [], // Configure allowed domains as needed
+      maxContentSize: 5 * 1024 * 1024, // 5MB limit
+      allowRedirects: true,
+    })
+
+    const tools = [
+      {
+        name: "read_url",
+        description: `Fetches and reads content from specified URLs. Use this tool when you need to read content from a webpage.
+        The tool will return the text content of the page with HTML tags stripped.
+        Only use this for valid HTTP/HTTPS URLs.
+        If the URL is invalid or inaccessible, the tool will return an error message.
+        The tool has a 5MB size limit and 5 second timeout by default.
+        Do not use this tool unless explicitly asked to read from a URL.`,
+        input_schema: {
+          type: "object" as const,
+          properties: {
+            url: {
+              type: "string",
+              description:
+                "The URL to fetch content from. Must be a valid HTTP/HTTPS URL.",
+            },
+            timeout: {
+              type: "number",
+              description: "Optional timeout in milliseconds (default: 5000)",
+            },
+            stripHtml: {
+              type: "boolean",
+              description:
+                "Whether to strip HTML tags from response (default: true)",
+            },
+          },
+          required: ["url"],
+        },
+      },
+    ]
+
     const anthropic = new Anthropic({
       apiKey: process.env.CLAUDE_API_KEY,
     })
@@ -118,8 +157,72 @@ Your answer, as if you are David:`
         { role: "assistant", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
+      tools: tools,
     })
 
+    // Handle tool use if Claude requests it
+    if (completion.stop_reason === "tool_use") {
+      const toolUse = completion.content.find(
+        (block: any) => block.type === "tool_use"
+      ) as ToolUseBlock
+
+      if (toolUse && toolUse.name === "read_url") {
+        try {
+          const result = await urlReader.execute(
+            toolUse.input as URLReaderInput
+          )
+
+          // Send the tool result back to Claude
+          const toolResponse = await anthropic.messages.create({
+            model: "claude-3-5-sonnet-latest",
+            max_tokens: 400,
+            messages: [
+              { role: "assistant", content: systemPrompt },
+              { role: "user", content: userPrompt },
+              {
+                role: "assistant",
+                content: completion.content,
+              },
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "tool_result",
+                    tool_use_id: toolUse.id,
+                    content: result.content,
+                    is_error: result.error ? true : false,
+                  },
+                ],
+              },
+            ],
+            tools: tools,
+          })
+
+          // Use the final response from Claude
+          const claudeResponse = (toolResponse.content[0] as TextBlock).text
+
+          // Update QA pairing with response
+          await db
+            .collection("qaPairings")
+            .doc(messageId)
+            .update({
+              answer: claudeResponse,
+              serializedAnswer: await serialize(claudeResponse),
+              answeredAt: Timestamp.now(),
+            } as Partial<QAPairing>)
+
+          return NextResponse.json({ success: true })
+        } catch (error) {
+          logger.error("Tool execution error", error)
+          return NextResponse.json(
+            { error: "Error executing tool" },
+            { status: 500 }
+          )
+        }
+      }
+    }
+
+    // Handle normal response (no tool use)
     const claudeResponse = (completion.content[0] as TextBlock).text
 
     console.log("claudeResponse", claudeResponse)
