@@ -17,8 +17,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
     // Text elements
     p: (props) => <div className="mb-4 leading-relaxed" {...props} />,
-    strong: (props) => <div className="font-bold" {...props} />,
-    em: (props) => <div className="italic" {...props} />,
+    strong: (props) => <span className="font-bold" {...props} />,
+    em: (props) => <span className="italic" {...props} />,
 
     // Lists
     ul: (props) => (
@@ -50,7 +50,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
     // Links
     a: (props) => (
-      <div className="text-blue-600 underline hover:text-blue-800" {...props} />
+      <a className="text-blue-600 underline hover:text-blue-800" {...props} />
     ),
 
     // Horizontal rule

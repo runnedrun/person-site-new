@@ -10,17 +10,15 @@ import { uniqBy } from "lodash"
 import { ArrowDown, ChevronLeft, ChevronRight, Send } from "lucide-react"
 import { MDXRemote as MDXRemoteClient } from "next-mdx-remote"
 import { useContext, useEffect, useState } from "react"
+import { AutosizeTextarea } from "../ui/AutoGrowTextArea"
 import { Button } from "../ui/button"
-import { Input } from "../ui/input"
 import { LoadingBounce } from "../ui/loading-bounce"
 import { LoadingSpinner } from "../ui/loading-spinner"
 import { AboutContext } from "./AboutPageWrapper"
 import { CurrentAbout } from "./CurrentAbout"
 import { DavidSummary } from "./DavidSummary"
-import { Textarea } from "../ui/textarea"
-import { AutosizeTextarea } from "../ui/AutoGrowTextArea"
 
-export const DEFAULT_QUESTION = "Who are you?"
+export const DEFAULT_QUESTION = "Describe yourself"
 
 export const QADisplay = () => {
   const { startingQA, setParam } = useContext(AboutContext)
@@ -45,8 +43,6 @@ export const QADisplay = () => {
     isNotNil
   )
 
-  console.log("stsar", startingQA)
-
   // todo handle when the other QAs take some time to load
 
   const withDefaultQuestion = uniqBy(
@@ -58,20 +54,14 @@ export const QADisplay = () => {
     ? withDefaultQuestion.findIndex((qa) => qa.uid === startingQA.uid)
     : withDefaultQuestion.length - 1
 
-  console.log("startingIndex", startingIndex)
-
   const [question, setQuestion] = useState(DEFAULT_QUESTION)
   const [qaIndex, setQaIndex] = useState(startingIndex)
   const [isLoading, setIsLoading] = useState(false) // Get all QA pairings for user
 
   const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing
 
-  console.log("currentQA", currentQA)
-  console.log("qaIndex", qaIndex)
-
   useEffect(() => {
     if (currentQA?.uid) {
-      console.log("setting selectedQAId", currentQA.uid)
       setParam("selectedQAId", currentQA.uid)
     }
   }, [currentQA?.uid])
@@ -161,7 +151,7 @@ export const QADisplay = () => {
     <div className="flex w-full flex-col gap-4">
       <DavidSummary />
       <div className="w-full text-center font-bold">
-        Ask David Bot some questions!
+        Want to know more? Ask David Bot!
       </div>
       <div className="flex items-center gap-2">
         <Button

@@ -37,10 +37,10 @@ export const AboutPageWrapper: ServerDataReceiverComponent<
 
                 <Link
                   href="#resume"
-                  className="flex h-8 w-full shrink-0 cursor-pointer items-start justify-center gap-2"
+                  className="flex h-8 w-full shrink-0 cursor-pointer items-start justify-center gap-2 pb-10"
                 >
                   <div className="flex items-center">
-                    <span className="text-lg font-semibold text-gray-600">
+                    <span className="text-xl text-gray-600">
                       Read my resumé
                     </span>
                     <ChevronDown className="h-6 w-6"></ChevronDown>

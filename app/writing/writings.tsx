@@ -13,10 +13,6 @@ export const writings: WritingEntry[] = [
     title: "5 Lessons from Impact Startups",
   },
   {
-    slug: "ai-and-coding",
-    title: "AI and Coding",
-  },
-  {
     slug: "authenticity-and-privilege",
     title: "Authenticity and Privilege",
   },

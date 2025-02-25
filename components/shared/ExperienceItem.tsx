@@ -51,7 +51,7 @@ export default function ExperienceItem({
       <div className="text-center">
         {popupContent ? (
           <AboutPopupTrigger showUnderline={false} popupContent={popupContent}>
-            <div className="text-lg font-semibold hover:text-blue-600">
+            <div className="text-lg font-semibold hover:text-blue-600 print:text-sm">
               {title}
             </div>
           </AboutPopupTrigger>
@@ -59,15 +59,15 @@ export default function ExperienceItem({
           link && (
             <Link
               href={link}
-              className="text-lg font-semibold hover:text-blue-600"
+              className="text-lg font-semibold hover:text-blue-600 print:text-sm"
             >
               {title}
             </Link>
           )
         )}
-        <div className="text-sm text-gray-600">{period}</div>
-        <div className="text-sm text-gray-600">{role}</div>
-        <div className="mt-2 text-sm">{description}</div>
+        <div className="text-sm text-gray-600 print:text-xs">{period}</div>
+        <div className="text-sm text-gray-600 print:text-xs">{role}</div>
+        <div className="mt-2 text-sm print:text-xs">{description}</div>
       </div>
     </div>
   )

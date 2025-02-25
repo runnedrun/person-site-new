@@ -22,21 +22,24 @@ export const SlideTransitionContactInfo = ({
             </div>
             <Link
               href="https://github.com/runnedrun"
-              className="hover:underline"
+              className="text-gray-600 hover:underline"
             >
               github.com/runnedrun
             </Link>
-            <Link href="mailto:runnedrun@gmail.com" className="hover:underline">
+            <Link
+              href="mailto:runnedrun@gmail.com"
+              className="text-gray-600 hover:underline"
+            >
               runnedrun@gmail.com
             </Link>
             <Link
               href="https://www.linkedin.com/in/runnedrun/"
-              className="hover:underline"
+              className="text-gray-600 hover:underline"
             >
               linkedin.com/in/runnedrun
             </Link>
-            <Link href="/writing" className="hover:underline">
-              Writing
+            <Link href="/writing" className="text-gray-600 hover:underline">
+              My Writing
             </Link>
           </div>
         </div>
@@ -45,7 +48,7 @@ export const SlideTransitionContactInfo = ({
             <div className="flex flex-col flex-wrap items-center font-grotesk text-lg font-bold text-orange-600">
               I'm still David Gaynor
             </div>
-            <div>but I hope a few things will be different...</div>
+            <div>but I'm working on a few things...</div>
           </div>
         </div>
       </div>
