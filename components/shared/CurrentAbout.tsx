@@ -17,17 +17,6 @@ export const CurrentAbout = () => {
               <div className="mt-2 text-sm text-muted-foreground">
                 Related Essays:{" "}
                 <Link
-                  href="/writing/i-love-building-software"
-                  className="hover:underline"
-                >
-                  I Love Building Software...again
-                </Link>
-                ,{" "}
-                <Link href="/writing/coding-and-ai" className="hover:underline">
-                  Coding and AI
-                </Link>
-                ,{" "}
-                <Link
                   href="/writing/finding-product-flow"
                   className="hover:underline"
                 >
