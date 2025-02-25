@@ -1,12 +1,17 @@
-import { connectAuthEmulator, getAuth } from "@firebase/auth"
-import { connectStorageEmulator, getStorage } from "@firebase/storage"
 import { getApp as fbGetApp, initializeApp } from "@firebase/app"
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+  ReCaptchaV3Provider,
+} from "@firebase/app-check"
+import { connectAuthEmulator, getAuth } from "@firebase/auth"
 import {
   connectFirestoreEmulator,
   getFirestore,
   initializeFirestore,
 } from "@firebase/firestore"
-import { initializeAppCheck, ReCaptchaV3Provider } from "@firebase/app-check"
+import { getStorage } from "@firebase/storage"
+import { isServerside } from "./isServerside"
 
 const getApp = (name?: string) => {
   let app = null
@@ -50,10 +55,10 @@ export const init = () => {
     connectAuthEmulator(getAuth(), "http://localhost:9090", {
       disableWarnings: true,
     })
-  } else {
+  } else if (!isServerside()) {
     initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(
-        "6LfynsQqAAAAAJoUnmXkofQVXOY5jBTakHLb5jT2"
+      provider: new ReCaptchaEnterpriseProvider(
+        "6LcUGuIqAAAAAJWgMLSitf24Rvpn0_UfO27XeUlz"
       ),
 
       isTokenAutoRefreshEnabled: true,

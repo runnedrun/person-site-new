@@ -44,8 +44,8 @@ import {
 } from "firebase/firestore"
 import { isArray, isEqual, isNil, isNull, isUndefined, partition } from "lodash"
 import { ValuesType } from "utility-types"
-import { isNotUndefined, isUndefTyped } from "./helpers/isUndefTyped"
 import { init } from "./helpers/initFb"
+import { isNotUndefined } from "./helpers/isUndefTyped"
 
 const DEFAULT_OPTIONS = { includeMetadataChanges: true }
 
@@ -284,12 +284,11 @@ export type TypedQueryBuilder<CollectionName extends keyof AllModels> = (
   filters: BuilderFilters<CollectionName>
 ) => BuilderReturnType
 
-const buildQueryObs = <CollectionName extends keyof AllModels>(
-  collectionName: CollectionName,
+export const buildQueryWithDefaultBuilders = <
+  CollectionName extends keyof AllModels,
+>(
   buildQuery: TypedQueryBuilder<CollectionName>
-): Observable<Query<DocumentData>> => {
-  const db = init()
-  const ref = collection(db, collectionName)
+) => {
   const queryConstraintsOrObs = buildQuery({
     where: whereWithObservable as TypedWhere<AllModels[CollectionName]>,
     orderBy: orderByWithObservable as TypedOrderBy<AllModels[CollectionName]>,
@@ -300,12 +299,21 @@ const buildQueryObs = <CollectionName extends keyof AllModels>(
   const queryConstraintsObs = queryConstraintsOrObs.map((_) =>
     isObservable(_) ? _ : of(_)
   )
-
   const orEmpty = queryConstraintsObs.length
     ? queryConstraintsObs
     : ([] as Observable<PossibleQueryConstraint>[])
 
-  return combineLatest(orEmpty).pipe(
+  return combineLatest(orEmpty)
+}
+
+export const buildQueryObs = <CollectionName extends keyof AllModels>(
+  collectionName: CollectionName,
+  buildQuery: TypedQueryBuilder<CollectionName>
+): Observable<Query<DocumentData>> => {
+  const db = init()
+  const ref = collection(db, collectionName)
+
+  return buildQueryWithDefaultBuilders(buildQuery).pipe(
     map((resolvedQueryContstraints: any[]) => {
       const includesArchived = resolvedQueryContstraints.some(
         (_) => _.type === "where" && _.field === "archived"
@@ -321,10 +329,12 @@ const buildQueryObs = <CollectionName extends keyof AllModels>(
       )
       const wrappedInAnd = and(...whereQueryConstraints)
 
-      if (whereQueryConstraints.length) {
-        return query(ref, wrappedInAnd, ...otherQueryConstraints)
+      const allConstraints = [wrappedInAnd, ...otherQueryConstraints]
+
+      if (allConstraints.length) {
+        return query(ref, ...allConstraints)
       } else {
-        return query(ref, ...otherQueryConstraints)
+        return query(ref)
       }
     })
   )
