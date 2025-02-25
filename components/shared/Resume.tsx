@@ -21,7 +21,7 @@ export default function Portfolio() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-4 print:p-0" id="resume">
       <div className="mb-4 flex w-full justify-center">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           <div className="flex flex-col print:text-sm">
             <div className="flex gap-1">
               <div className="font-bold">David Gaynor,</div>
