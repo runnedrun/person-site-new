@@ -29,6 +29,13 @@ export default function Portfolio() {
                 runnedrun@gmail.com
               </a>
             </div>
+            <a
+              href="https://freedavid.info"
+              className="hidden hover:underline print:block"
+              target="_blank"
+            >
+              freedavid.info
+            </a>
 
             <div>Gothenburg, Sweden</div>
           </div>
