@@ -11,5 +11,5 @@ I am an <AboutPopupDetails details="and also a writer" relatedContentLinks={} >e
 Here are the possible links for writing:
 ${writings.map((writing) => `${writing.slug} - ${writing.title}`).join("\n")}
 
-You can also use any CommonMark markdown formatting.
+You can also use any CommonMark markdown tags including links, bold, italic, code, etc. When referencing side projects please include a link to the project.
 `

@@ -56,13 +56,12 @@ export const init = () => {
       disableWarnings: true,
     })
   } else if (!isServerside()) {
-    initializeAppCheck(app, {
-      provider: new ReCaptchaEnterpriseProvider(
-        "6LcUGuIqAAAAAJWgMLSitf24Rvpn0_UfO27XeUlz"
-      ),
-
-      isTokenAutoRefreshEnabled: true,
-    })
+    // initializeAppCheck(app, {
+    //   provider: new ReCaptchaEnterpriseProvider(
+    //     "6LcUGuIqAAAAAJWgMLSitf24Rvpn0_UfO27XeUlz"
+    //   ),
+    //   isTokenAutoRefreshEnabled: true,
+    // })
   }
 
   return db

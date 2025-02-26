@@ -19,6 +19,7 @@ export const SlideTransitionImage = ({
             src="/no_bg_normal.png"
             alt="Profile Picture"
             fill
+            sizes="150px"
             className="object-cover"
           />
         </div>
@@ -27,6 +28,7 @@ export const SlideTransitionImage = ({
             src="/no_bg_fun.png"
             alt="Profile Picture"
             fill
+            sizes="150px"
             className="scale-125 object-cover"
           />
         </div>

@@ -141,13 +141,10 @@ Remember:
 1. Only provide brief responses
 2. Only use information from the provided context
 3. Always provide a response, even if no relevant information is found
-4. Answer in the first person, as if you are David.
+4. Answer in the first person, as if you are David, with no prefix.
 5. Return your response in valid JSON format`
 
-    const userPrompt = `
-${previousQuestionsString}
-
-Your answer, as if you are David:`
+    const userPrompt = `${previousQuestionsString}`
 
     // Get Claude response
     const completion = await anthropic.messages.create({
@@ -156,6 +153,7 @@ Your answer, as if you are David:`
       messages: [
         { role: "assistant", content: systemPrompt },
         { role: "user", content: userPrompt },
+        { role: "assistant", content: "Here is my answer, as if I am David:" },
       ],
       tools: tools,
     })
@@ -174,7 +172,7 @@ Your answer, as if you are David:`
 
           // Send the tool result back to Claude
           const toolResponse = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-latest",
+            model: "claude-3-7-sonnet-latest",
             max_tokens: 400,
             messages: [
               { role: "assistant", content: systemPrompt },
@@ -184,7 +182,7 @@ Your answer, as if you are David:`
                 content: completion.content,
               },
               {
-                role: "user",
+                role: "assistant",
                 content: [
                   {
                     type: "tool_result",

@@ -6,7 +6,7 @@ import { useObs } from "@/data/useObs"
 import { fbCreate } from "@/data/writerFe"
 import { useMDXComponents } from "@/mdx-components"
 import { orderBy, Timestamp } from "firebase/firestore"
-import { uniqBy } from "lodash"
+import { isNil, uniqBy } from "lodash"
 import { ArrowDown, ChevronLeft, ChevronRight, Send } from "lucide-react"
 import { MDXRemote as MDXRemoteClient } from "next-mdx-remote"
 import { useContext, useEffect, useState } from "react"
@@ -50,15 +50,27 @@ export const QADisplay = () => {
     (_) => _.uid
   ).reverse()
 
+  console.log("withDefaultQuestion", withDefaultQuestion)
+
   const startingIndex = startingQA
     ? withDefaultQuestion.findIndex((qa) => qa.uid === startingQA.uid)
     : withDefaultQuestion.length - 1
 
-  const [question, setQuestion] = useState(DEFAULT_QUESTION)
+  console.log("starign", startingIndex, startingQA, startingQA?.uid)
+
+  const [question, setQuestion] = useState(
+    startingQA?.question ?? DEFAULT_QUESTION
+  )
   const [qaIndex, setQaIndex] = useState(startingIndex)
   const [isLoading, setIsLoading] = useState(false) // Get all QA pairings for user
 
   const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing
+
+  useEffect(() => {
+    if (qaPairings) {
+      setQaIndex(startingIndex)
+    }
+  }, [isNil(qaPairings)])
 
   useEffect(() => {
     if (currentQA?.uid) {
@@ -163,7 +175,6 @@ export const QADisplay = () => {
         </Button>
         <AutosizeTextarea
           rows={1}
-          minHeight={30}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSubmit(e)
