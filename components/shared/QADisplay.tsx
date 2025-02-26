@@ -17,6 +17,7 @@ import { LoadingSpinner } from "../ui/loading-spinner"
 import { AboutContext } from "./AboutPageWrapper"
 import { CurrentAbout } from "./CurrentAbout"
 import { DavidSummary } from "./DavidSummary"
+import { logEvent } from "@/data/analytics/logEvent"
 
 export const DEFAULT_QUESTION = "Describe yourself"
 
@@ -50,13 +51,9 @@ export const QADisplay = () => {
     (_) => _.uid
   ).reverse()
 
-  console.log("withDefaultQuestion", withDefaultQuestion)
-
   const startingIndex = startingQA
     ? withDefaultQuestion.findIndex((qa) => qa.uid === startingQA.uid)
     : withDefaultQuestion.length - 1
-
-  console.log("starign", startingIndex, startingQA, startingQA?.uid)
 
   const [question, setQuestion] = useState(
     startingQA?.question ?? DEFAULT_QUESTION
@@ -122,6 +119,10 @@ export const QADisplay = () => {
 
     setQaIndex(withDefaultQuestion.length)
 
+    logEvent("qa_submitted", {
+      question,
+      question_length: question.length,
+    })
     const ref = await fbCreate("qaPairings", newQA)
 
     // Trigger answer processing
