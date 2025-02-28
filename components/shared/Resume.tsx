@@ -178,7 +178,7 @@ export default function Portfolio() {
         </div>
         <div className="flex gap-2">
           <a
-            href="https://thearcgame.com"
+            href="https://thearcgame.com/sample-game"
             className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
           >
             TheArcGame.com
