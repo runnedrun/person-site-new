@@ -84,10 +84,8 @@ export async function POST(req: NextRequest) {
 
     const { messageId } = await req.json()
 
-    console.log("messageId", messageId)
     // Get the QA pairing
     const qaDoc = await db.collection("qaPairings").doc(messageId).get()
-    console.log("qaDoc", qaDoc.data())
     const previousQuestions = await db
       .collection("qaPairings")
       .where("askedBy", "==", qaDoc.data()?.askedBy)
@@ -222,8 +220,6 @@ Remember:
 
     // Handle normal response (no tool use)
     const claudeResponse = (completion.content[0] as TextBlock).text
-
-    console.log("claudeResponse", claudeResponse)
 
     // Update QA pairing with response
     await db
