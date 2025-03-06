@@ -10,6 +10,7 @@ import { answerFormatExplanation } from "./answerFormatExplanation"
 import Anthropic from "@anthropic-ai/sdk"
 import { TextBlock, ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs"
 import { URLReaderImpl, URLReaderInput } from "@/lib/tools/URLReaderImpl"
+import { getSecretAbout } from "@/sanity/getSecretAbout"
 const { combine, errors, timestamp } = format
 
 const baseFormat = combine(
@@ -111,10 +112,7 @@ export async function POST(req: NextRequest) {
       .join("\n")
 
     // Get context from storage
-    const bucket = storage.bucket("david-qa.firebasestorage.app")
-    const file = bucket.file("secret_about.md")
-    const [content] = await file.download()
-    const context = content.toString("utf-8")
+    const context = await getSecretAbout()
 
     const currentDate = new Date().toISOString()
 

@@ -1,17 +1,11 @@
 import { getApp as fbGetApp, initializeApp } from "@firebase/app"
-import {
-  initializeAppCheck,
-  ReCaptchaEnterpriseProvider,
-  ReCaptchaV3Provider,
-} from "@firebase/app-check"
 import { connectAuthEmulator, getAuth } from "@firebase/auth"
 import {
   connectFirestoreEmulator,
   getFirestore,
   initializeFirestore,
 } from "@firebase/firestore"
-import { getStorage } from "@firebase/storage"
-import { isServerside } from "./isServerside"
+import { CommentsEnabledContext } from "sanity/_singletons"
 
 const getApp = (name?: string) => {
   let app = null
@@ -37,31 +31,20 @@ export const init = () => {
     messagingSenderId:
       process.env.NEXT_PUBLIC_FIREBASE_CLIENT_CONFIG_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_CONFIG_APP_ID,
-    measurementId:
-      process.env.NEXT_PUBLIC_FIREBASE_CLIENT_CONFIG_MEASUREMENT_ID,
   }
 
+  console.log("INTINGIN APP", config)
   const app = initializeApp(config)
 
   const db = initializeFirestore(app, {
     experimentalAutoDetectLongPolling: true,
   })
 
-  const storage = getStorage(app)
-
   if (demoMode) {
     connectFirestoreEmulator(db, "localhost", 8072)
-    // connectStorageEmulator(storage, "localhost", 9190)
     connectAuthEmulator(getAuth(), "http://localhost:9090", {
       disableWarnings: true,
     })
-  } else if (!isServerside()) {
-    // initializeAppCheck(app, {
-    //   provider: new ReCaptchaEnterpriseProvider(
-    //     "6LcUGuIqAAAAAJWgMLSitf24Rvpn0_UfO27XeUlz"
-    //   ),
-    //   isTokenAutoRefreshEnabled: true,
-    // })
   }
 
   return db

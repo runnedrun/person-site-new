@@ -51,7 +51,7 @@ const withMDX = createMDX({
   // Add markdown plugins here, as desired
 })
 
-if (process.env.USE_SENTRY) {
+if (process.env.NODE_ENV === "production") {
   module.exports = withMDX(
     withSentryConfig(nextConfig, {
       // For all available options, see:

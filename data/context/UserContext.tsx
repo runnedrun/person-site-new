@@ -27,8 +27,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    init()
-    const auth = getAuth()
+    const store = init()
+    const auth = getAuth(store.app)
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser)
