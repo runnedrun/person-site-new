@@ -17,13 +17,26 @@ import { LoadingSpinner } from "../ui/loading-spinner"
 import { AboutContext } from "./AboutPageWrapper"
 import { CurrentAbout } from "./CurrentAbout"
 import { DavidSummary } from "./DavidSummary"
-import { logEvent } from "@/data/analytics/logEvent"
+import {
+  logEvent,
+  setLogContext,
+  updateLogContext,
+} from "@/data/analytics/logEvent"
 
 export const DEFAULT_QUESTION = "Describe yourself"
 
 export const QADisplay = () => {
   const { startingQA, setParam } = useContext(AboutContext)
   const { user } = useContext(UserContext)
+
+  useEffect(() => {
+    updateLogContext({
+      initialQuestion: startingQA?.question,
+    })
+    if (startingQA?.question) {
+      logEvent("initial_question_viewed")
+    }
+  }, [startingQA?.question])
 
   const qaPairings = useObs(
     user

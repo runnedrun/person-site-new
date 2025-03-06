@@ -33,7 +33,6 @@ export const init = () => {
     appId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_CONFIG_APP_ID,
   }
 
-  console.log("INTINGIN APP", config)
   const app = initializeApp(config)
 
   const db = initializeFirestore(app, {

@@ -3,8 +3,8 @@
 import Script from "next/script"
 import React, { useEffect } from "react"
 
-import { logEvent, setCurrentScreen } from "./logEvent"
-import { usePathname } from "next/navigation"
+import { logEvent, setCurrentScreen, setLogContext } from "./logEvent"
+import { usePathname, useSearchParams } from "next/navigation"
 import { analyticsLoadedSubject } from "./analyticsLoadedSubject"
 
 const screenNameMatchers = [
