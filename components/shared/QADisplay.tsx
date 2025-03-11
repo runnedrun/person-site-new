@@ -176,7 +176,17 @@ export const QADisplay = () => {
   return (
     <div className="flex w-full flex-col gap-4">
       <DavidSummary />
-      <div className="w-full text-center font-bold">
+      <div
+        className="w-full text-center font-bold"
+        onClick={(e) => {
+          if (e.metaKey) {
+            console.log(
+              "edit question here:",
+              `https://console.firebase.google.com/project/david-qa/firestore/databases/-default-/data/~2FqaPairings~2F${currentQA?.uid}`
+            )
+          }
+        }}
+      >
         Want to know more? Ask David Bot!
       </div>
       <div className="flex items-center gap-2">
@@ -190,10 +200,11 @@ export const QADisplay = () => {
         <AutosizeTextarea
           rows={1}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !e.shiftKey) {
               handleSubmit(e)
             }
           }}
+          maxHeight={50}
           value={question}
           disabled={isLoading}
           onChange={(e) => setQuestion(e.target.value)}
