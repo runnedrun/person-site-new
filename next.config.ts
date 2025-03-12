@@ -43,6 +43,47 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  webpack: (configToModify) => {
+    // Only apply aliases when building for the browser
+
+    if (
+      configToModify.name === "client" ||
+      configToModify.name === "edge-server"
+    ) {
+      configToModify.resolve = configToModify.resolve || {}
+      configToModify.resolve.alias = {
+        ...configToModify.resolve.alias,
+        fs: require.resolve("./shims/ModuleStub.js"),
+        path: require.resolve("./shims/ModuleStub.js"),
+        child_process: require.resolve("./shims/ModuleStub.js"),
+        net: require.resolve("./shims/ModuleStub.js"),
+        tls: require.resolve("./shims/ModuleStub.js"),
+        crypto: require.resolve("./shims/ModuleStub.js"),
+        http: require.resolve("./shims/ModuleStub.js"),
+        https: require.resolve("./shims/ModuleStub.js"),
+        zlib: require.resolve("./shims/ModuleStub.js"),
+        stream: require.resolve("./shims/ModuleStub.js"),
+        util: require.resolve("./shims/ModuleStub.js"),
+        os: require.resolve("./shims/ModuleStub.js"),
+        assert: require.resolve("./shims/ModuleStub.js"),
+        buffer: require.resolve("./shims/ModuleStub.js"),
+        vm: require.resolve("./shims/ModuleStub.js"),
+        worker_threads: require.resolve("./shims/ModuleStub.js"),
+        constants: require.resolve("./shims/ModuleStub.js"),
+        events: require.resolve("./shims/ModuleStub.js"),
+        module: require.resolve("./shims/ModuleStub.js"),
+        process: require.resolve("./shims/ModuleStub.js"),
+        querystring: require.resolve("./shims/ModuleStub.js"),
+        request: require.resolve("./shims/ModuleStub.js"),
+        url: require.resolve("./shims/ModuleStub.js"),
+        "./writerBe": require.resolve("./shims/ModuleStub.js"),
+        "./readerBe": require.resolve("./shims/ModuleStub.js"),
+        "./toBeQueryBuilder": require.resolve("./shims/ModuleStub.js"),
+      }
+    }
+
+    return configToModify
+  },
 }
 
 const withMDX = createMDX({

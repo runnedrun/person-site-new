@@ -145,3 +145,5 @@ export const batchDelete = async <CollectionName extends keyof AllModels>(
     }
   )
 }
+
+export const _isStub = false

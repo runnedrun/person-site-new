@@ -144,3 +144,5 @@ export const runTransaction = async <
     return { ...docData, ...valueToSave }
   })
 }
+
+export const _isStub = false
