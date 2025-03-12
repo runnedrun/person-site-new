@@ -1,4 +1,4 @@
-import { GeometricBg } from "@/components/shared/GeometricBg"
+import { GeometricBg } from "@/components/about/GeometricBg"
 import dayjs from "dayjs"
 
 interface WritingLayoutProps {

@@ -1,4 +1,4 @@
-import { AboutPageWrapper } from "@/components/shared/AboutPageWrapper"
+import { AboutPageWrapper } from "@/components/about/AboutPageWrapper"
 import { rootComponent } from "@/data/rootComponent"
 import { aboutDataFns } from "@/loaders/about/aboutDataFns"
 

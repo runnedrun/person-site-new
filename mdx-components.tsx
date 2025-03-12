@@ -1,8 +1,8 @@
 import type { MDXComponents } from "mdx/types"
-import { PlaceTimeline } from "./components/shared/PlaceTimeline"
-import { AboutPopupTrigger } from "./components/shared/AboutPopupTrigger"
-import { MyTimeline } from "./components/shared/MyTimeline"
-import { AboutPopupDetails } from "./components/shared/AboutPopupDetails"
+import { PlaceTimeline } from "./components/about/PlaceTimeline"
+import { AboutPopupTrigger } from "./components/about/AboutPopupTrigger"
+import { MyTimeline } from "./components/about/MyTimeline"
+import { AboutPopupDetails } from "./components/about/AboutPopupDetails"
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {

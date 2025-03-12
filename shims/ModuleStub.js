@@ -87,21 +87,10 @@ const baseFunction = createBaseClass()
 // Create the module stub
 moduleStub = new Proxy(baseFunction, handler)
 
-// Add default property for ES modules interop
-Object.defineProperty(moduleStub, "default", {
-  get: function () {
-    return moduleStub
-  },
-  configurable: true,
-  enumerable: true,
-  _isStub: true,
-})
-
-// Handle CommonJS interop for Next.js
-// if (typeof module !== "undefined") {
-//   module.exports = moduleStub
-//   module.exports.__esModule = true
-//   module.exports.default = moduleStub
-// }
-
-export default null
+// Export necessary items for module compatibility
+export const __esModule = true
+export default moduleStub
+export const toBeQueryBuilder = moduleStub
+export const default_export = moduleStub
+export const createQueryBuilder = moduleStub
+export const QueryBuilder = moduleStub

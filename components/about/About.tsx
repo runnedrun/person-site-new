@@ -1,6 +1,6 @@
 "use client"
-import { useAboutMode } from "@/components/shared/AboutModeContext"
-import { FutureToggle } from "@/components/shared/FutureToggle"
+import { useAboutMode } from "@/components/about/AboutModeContext"
+import { FutureToggle } from "@/components/about/FutureToggle"
 import { Overlay } from "./Overlay"
 import { SlideTransitionAbout } from "./SlideTransitionAbout"
 import { SlideTransitionContactInfo } from "./SlideTransitionContactInfo"

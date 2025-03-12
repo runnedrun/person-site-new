@@ -36,10 +36,8 @@ export type GetObsForArgFn<ArgObject extends Record<string, unknown>> = <
 export type DataFnType<
   DataType extends Record<string, unknown> = any,
   ParamsType extends Record<string, unknown> = any,
-  PropsType extends Record<string, unknown> = any,
 > = (args: {
   getParam: GetObsForArgFn<ParamsType>
-  getProp: GetObsForArgFn<PropsType>
 }) => DataType & { _deps?: unknown[] }
 
 export const buildKeyGetterFromObs = <
@@ -95,7 +93,6 @@ export const rootComponent = <
         getParam: buildKeyGetterFromObs(
           of({ ...resolvedParams, ...resolvedSearchParams })
         ),
-        getProp: buildKeyGetterFromObs(of({})),
       })
 
       const { dataObs } = splitDataAndStatics(dataObj)

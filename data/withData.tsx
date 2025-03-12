@@ -33,18 +33,8 @@ export type ParamsTypeFromDataFn<DataFn extends DataFnType> =
     ? ParamsType
     : never
 
-export type PropsTypeFromDataFn<DataFn extends DataFnType> =
-  DataFn extends DataFnType<infer DataType, infer ParamsType, infer Props>
-    ? Props
-    : never
-
 export type ResolvedDataTypeFromDataFn<DataFn extends DataFnType> =
   DataWithStatics<DataTypeFromDataFn<DataFn>>
-
-export type PropsFromDataFn<DataFn extends DataFnType> =
-  DataFn extends DataFnType<infer DataType, infer Params, infer StaticProps>
-    ? ComponentProps<DataType, Params, StaticProps>
-    : never
 
 type ComponentProps<
   DataType extends Record<string, unknown>,
@@ -56,16 +46,19 @@ type ComponentProps<
     setParam: (name: keyof Params, value: string | null | undefined) => void
     _isLoading: boolean
   }
-type TopLevelReturnComponentProps<DataFn extends DataFnType> =
-  PassFromServerToClientProp<
-    DataWithStatics<DataTypeFromDataFn<DataFn>>,
-    ParamsTypeFromDataFn<DataFn>
-  > &
-    PropsTypeFromDataFn<DataFn>
+type TopLevelReturnComponentProps<
+  DataFn extends DataFnType,
+  StaticProps extends Record<string, unknown> = Record<string, unknown>,
+> = PassFromServerToClientProp<
+  DataWithStatics<DataTypeFromDataFn<DataFn>>,
+  ParamsTypeFromDataFn<DataFn>
+> &
+  StaticProps
 
-type TopLevelReturnComponentType<DataFn extends DataFnType> = (
-  props: TopLevelReturnComponentProps<DataFn>
-) => JSX.Element
+type TopLevelReturnComponentType<
+  DataFn extends DataFnType,
+  StaticProps extends Record<string, unknown> = Record<string, unknown>,
+> = (props: TopLevelReturnComponentProps<DataFn, StaticProps>) => JSX.Element
 
 export const withData =
   <
@@ -74,10 +67,9 @@ export const withData =
   >() =>
   <
     DataType extends Record<string, unknown>,
-    DataFn extends DataFnType<DataType, ParamsType, StaticProps> = DataFnType<
+    DataFn extends DataFnType<DataType, ParamsType> = DataFnType<
       DataType,
-      ParamsType,
-      StaticProps
+      ParamsType
     >,
   >(
     dataFn: DataFn,
@@ -85,11 +77,11 @@ export const withData =
       props: ComponentProps<
         DataTypeFromDataFn<DataFn>,
         ParamsTypeFromDataFn<DataFn>,
-        PropsFromDataFn<DataFn>
+        StaticProps
       >
     ) => JSX.Element,
     options?: WithDataOptions
-  ): TopLevelReturnComponentType<DataFn> => {
+  ): TopLevelReturnComponentType<DataFn, StaticProps> => {
     const UnderlyingComponent = (
       props: TopLevelReturnComponentProps<DataFn>
     ) => {
@@ -97,12 +89,6 @@ export const withData =
         name: keyof ParamsType,
         value: string
       ) => void
-      const propsForCompare = omit(
-        props,
-        "_initialValues",
-        "children",
-        "params"
-      ) as unknown as StaticProps
 
       const propsForPassingToChild = omit(
         props,
@@ -131,18 +117,8 @@ export const withData =
         paramsSub.next(allParams)
       }, [allParams])
 
-      const propsSubj = useMemo(
-        () => new BehaviorSubject(propsForPassingToChild),
-        []
-      )
-      const getObsForProp = buildKeyGetterFromObs(propsSubj, of(true))
-      useEffect(() => {
-        propsSubj.next(propsForCompare)
-      }, [propsForCompare])
-
       const dataObj = dataFn({
         getParam: getObsForParam,
-        getProp: getObsForProp,
       })
 
       const { dataObs, statics } = splitDataAndStatics(dataObj)

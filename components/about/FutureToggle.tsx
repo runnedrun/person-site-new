@@ -1,5 +1,5 @@
 import { Switch } from "@/components/ui/switch"
-import { useAboutMode } from "@/components/shared/AboutModeContext"
+import { useAboutMode } from "@/components/about/AboutModeContext"
 
 export function FutureToggle() {
   const { aspirationalMode, setAspirationalMode } = useAboutMode()

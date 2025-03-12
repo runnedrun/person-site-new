@@ -4,7 +4,7 @@ import { AllModels } from "./CollectionModels"
 import { isServerside } from "./helpers/isServerside"
 import * as readerFe from "./readerFe"
 import { orObs } from "./helpers/orObs"
-import { toBeQueryBuilder } from "./toBeQueryBuilder"
+import * as toBeQueryBuilderModule from "./toBeQueryBuilder"
 import * as readerBe from "./readerBe"
 
 // Re-export common types
@@ -67,7 +67,9 @@ export const readQuery = <CollectionName extends keyof AllModels>(
   if (beReader) {
     return firstValueFrom(
       readerFe.buildQueryWithDefaultBuilders(buildQuery).pipe(
-        map((constraints) => toBeQueryBuilder<CollectionName>(constraints)),
+        map((constraints) =>
+          toBeQueryBuilderModule.toBeQueryBuilder<CollectionName>(constraints)
+        ),
         switchMap((beBuilder) =>
           from(beReader.queryDocs(collectionName, beBuilder))
         )
@@ -84,7 +86,9 @@ export const queryObs = <CollectionName extends keyof AllModels>(
   const beReader = getBeReader()
   if (beReader) {
     return readerFe.buildQueryWithDefaultBuilders(buildQuery).pipe(
-      map((constraints) => toBeQueryBuilder<CollectionName>(constraints)),
+      map((constraints) =>
+        toBeQueryBuilderModule.toBeQueryBuilder<CollectionName>(constraints)
+      ),
       switchMap((beBuilder) =>
         from(beReader.queryDocs(collectionName, beBuilder))
       )
@@ -101,7 +105,9 @@ export const countObs = <CollectionName extends keyof AllModels>(
   const beReader = getBeReader()
   if (beReader) {
     return readerFe.buildQueryWithDefaultBuilders(buildQuery).pipe(
-      map((constraints) => toBeQueryBuilder(constraints)),
+      map((constraints) =>
+        toBeQueryBuilderModule.toBeQueryBuilder<CollectionName>(constraints)
+      ),
       switchMap((beBuilder) =>
         from(beReader.countDocs(collectionName, beBuilder))
       )
