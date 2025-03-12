@@ -1,0 +1,12 @@
+---
+description: used when you would create a new react component.
+globs: 
+alwaysApply: false
+---
+
+# Rules for react component creation
+
+If the component is small (less than 10 lines) and will only be used in one file, then it can be created, inline, in that file.
+If the component is larger than 10 lines, unless otherwise noted, create a new file for the the new component. 
+If the component is used only in one file, you can create it as a sibling file to the file where it's used. Othewise if it's used in more than one place you can create it in components/shared. 
+the components/ui path is reserved for shadcn components. 

@@ -1,0 +1,15 @@
+---
+description: This rule is used when you're creating new ui elements or are updating a ui.
+globs: 
+alwaysApply: false
+---
+For our ui we use:
+React
+tailwind style utilities
+Shadcn components
+
+
+Please avoid adding anything to [globals.css](mdc:app/globals.css), use tailwind for all styling. 
+If you must do something with css that that isn't supported by tailwind (for instance, complex animations), you can add them to global.css. Please do not modify [tailwind.config.ts](mdc:tailwind.config.ts), unless specifically requested.
+
+

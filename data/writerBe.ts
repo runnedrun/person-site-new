@@ -54,6 +54,7 @@ export const deleteDoc = async <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
   docId: string
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   await firestore.collection(collectionName).doc(docId).delete()
 }
@@ -71,6 +72,7 @@ export const createDoc = async <Key extends keyof CollectionModels>(
   data: Omit<AllModels[Key], keyof ModelBase>,
   opts?: CreateOptions
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   const id = opts?.id ?? getUuid()
   const ref = firestore.collection(collectionName).doc(id)
@@ -90,6 +92,7 @@ export const batchSet = async <CollectionName extends keyof AllModels>(
   getDocKey?: (record: AllModels[CollectionName], i: number) => string,
   batchSize: number = 100
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   const chunked = chunk(records, batchSize)
   const entries = Array.from(chunked.entries())
@@ -128,6 +131,7 @@ export const batchDelete = async <CollectionName extends keyof AllModels>(
   recordIds: string[],
   batchSize: number = 100
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   const chunked = chunk(recordIds, batchSize)
   const entries = Array.from(chunked.entries())
