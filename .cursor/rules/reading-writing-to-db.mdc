@@ -12,3 +12,5 @@ If data for a single doc is needed in a react component please use the docObs me
 If you need to query multiple docs use the method readQuery from [reader.ts](mdc:data/reader.ts)
 
 In both cases please use the [useObs.tsx](mdc:data/useObs.tsx) helper to mount the RXJs observable that is returned from those two methods.
+
+All the methods in [reader.ts](mdc:data/reader.ts) and [writer.ts](mdc:data/writer.ts) receive collection names to identify where in firestore to read or write the data. The possible collection names are all listed in [CollectionModels.ts](mdc:data/CollectionModels.ts).
