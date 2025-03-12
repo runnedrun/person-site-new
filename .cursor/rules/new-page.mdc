@@ -17,12 +17,15 @@ When we make new pages we use a special setup, along with helper methods, to mak
 
 Every new page should, unless otherwise noted have 3 files initially created:
 
-1) page.tsx - a simple file which just exports the result of [rootComponent.tsx](mdc:data/rootComponent.tsx) , which provides data from the given data function to the given ServerDataReceiver component.
+1) page.tsx - Use the structure in [page.tsx](mdc:app/example/page.tsx). This is a simple file which just exports the result of [rootComponent.tsx](mdc:data/rootComponent.tsx) , which provides data from the given data function to the given ServerDataReceiver component.
 
-2) pageNameDataFunctions (replace pageName) a file that exports an object with the same name as the function, and the object is a Record<string, DataFnType>  , from @dataFn.tsx. That object maps namespaces to fns which themselves return an object mapping names to observables. 
+2) pageNameDataFunctions (replace pageName) - use the structure in [examplePageDataFunctions.ts](mdc:app/example/examplePageDataFunctions.ts). This is a file that exports an object with the same name as the function. That object maps namespaces to fns which themselves return an object mapping names to observables. 
+Note: 
+you MUST use [dataFn.tsx](mdc:data/dataFn.tsx) to construct each data function you export in the data function map. That is a tricky function, it must be called with two parentheses ()(), as it is in [examplePageDataFunctions.ts](mdc:app/example/examplePageDataFunctions.ts).
 
-3) PageNameClientComponent.tsx (replace PageName) - a file with "use client" at the top, which contains a ServerDataReceiverComponent, named the same as the file, that will receive initial values from the server. For simple pages this file might also have all the displays needed, but if the page is more complex, we can create those components in separate files. This file also should export something like 
+3) PageNameClientComponent.tsx (replace PageName) - use the structure in [ExamplePageClientComponent.tsx](mdc:app/example/ExamplePageClientComponent.tsx). This is a file with "use client" at the top, which contains a ServerDataReceiverComponent, named the same as the file, that will receive initial values from the server then pass those into a context provider named ProvidePageNameContext. That provider and it's associated context are built using any of the data functiosn you exported from the above pageNameFunctions.
 
+Here is an exmaple of how it is built:
 export const [PageNameContext, ProvidePageNameContext] = buildDataContext(
   pageNameDataFunction
 )

@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 
 # Reading from the db
-All reads from the database, whether from the backend or frontend should use the methods in the file [reader.ts](mdc:data/reader.ts). 
+All reads from the database, whether from the backend or frontend should use the methods in the file [reader.ts](mdc:data/reader.ts). Please open this file now and carefully study it's documentation, particualar for the readQuery and queryObs methods. 
 
 # getting data from the db in a react component
 If data for a single doc is needed in a react component please use the docObs method from [reader.ts](mdc:data/reader.ts). 
