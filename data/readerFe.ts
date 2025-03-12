@@ -147,6 +147,7 @@ export type WhereValues =
   | Timestamp
   | string[]
   | number[]
+  | null
 
 export type FieldPathPathString<T> = {
   [K in keyof T]: T[K] extends object

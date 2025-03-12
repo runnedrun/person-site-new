@@ -14,3 +14,5 @@ If you need to query multiple docs use the method readQuery from [reader.ts](mdc
 In both cases please use the [useObs.tsx](mdc:data/useObs.tsx) helper to mount the RXJs observable that is returned from those two methods.
 
 All the methods in [reader.ts](mdc:data/reader.ts) and [writer.ts](mdc:data/writer.ts) receive collection names to identify where in firestore to read or write the data. The possible collection names are all listed in [CollectionModels.ts](mdc:data/CollectionModels.ts).
+
+When you need to write a timestamp, use the Timestamp class from "@firebase/firestore", and you can use Timestamp.now() if you wish to write the current timestamp.

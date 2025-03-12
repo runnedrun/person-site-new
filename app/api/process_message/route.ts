@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
 
     const previousQuestions = await readQuery(
       "qaPairings",
-      ({ where, orderBy, limit }) => [
-        where("askedBy", "==", qaDoc.askedBy),
+      ({ where, orderBy, limit, or, and }) => [
+        or(where("answer", "!=", null), where("answer", "!=", "")),
         orderBy("createdAt", "desc"),
         limit(3),
       ]
