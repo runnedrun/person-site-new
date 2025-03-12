@@ -3,48 +3,40 @@ import type { NextConfig } from "next"
 import createMDX from "@next/mdx"
 
 const nextConfig: NextConfig = {
-  /* config options here */
-
-  // serverExternalPackages: [
-  //   "@google-cloud/firestore",
-  //   "firebase-admin/firestore",
-  //   "https-proxy-agent",
-  // ],
-
-  // Define the fallbacks that will be used for both webpack and turbopack
-
-  // Keep the webpack config for non-turbo builds
-  // webpack: (configToModify) => {
-  //   configToModify.resolve.fallback = {
-  //     fs: false,
-  //     path: false,
-  //     child_process: false,
-  //     net: false,
-  //     tls: false,
-  //     crypto: false,
-  //     http: false,
-  //     https: false,
-  //     zlib: false,
-  //     stream: false,
-  //     util: false,
-  //     os: false,
-  //     assert: false,
-  //     buffer: false,
-  //     constants: false,
-  //     events: false,
-  //     module: false,
-  //     process: false,
-  //     querystring: false,
-  //     request: false,
-  //     url: false,
-  //     vm: false,
-  //     worker_threads: false,
-  //   }
-  //   return configToModify
-  // },
-
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   transpilePackages: ["next-mdx-remote", "jsdom"],
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        fs: { browser: "./shims/ModuleStub.js" },
+        path: { browser: "./shims/ModuleStub.js" },
+        child_process: { browser: "./shims/ModuleStub.js" },
+        net: { browser: "./shims/ModuleStub.js" },
+        tls: { browser: "./shims/ModuleStub.js" },
+        crypto: { browser: "./shims/ModuleStub.js" },
+        http: { browser: "./shims/ModuleStub.js" },
+        https: { browser: "./shims/ModuleStub.js" },
+        zlib: { browser: "./shims/ModuleStub.js" },
+        stream: { browser: "./shims/ModuleStub.js" },
+        util: { browser: "./shims/ModuleStub.js" },
+        os: { browser: "./shims/ModuleStub.js" },
+        assert: { browser: "./shims/ModuleStub.js" },
+        buffer: { browser: "./shims/ModuleStub.js" },
+        vm: { browser: "./shims/ModuleStub.js" },
+        worker_threads: { browser: "./shims/ModuleStub.js" },
+        constants: { browser: "./shims/ModuleStub.js" },
+        events: { browser: "./shims/ModuleStub.js" },
+        module: { browser: "./shims/ModuleStub.js" },
+        process: { browser: "./shims/ModuleStub.js" },
+        querystring: { browser: "./shims/ModuleStub.js" },
+        request: { browser: "./shims/ModuleStub.js" },
+        url: { browser: "./shims/ModuleStub.js" },
+        "@/data/readerBe": {
+          browser: "./shims/ModuleStub.js",
+        },
+      },
+    },
+  },
 }
 
 const withMDX = createMDX({

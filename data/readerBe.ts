@@ -19,7 +19,6 @@ export const readDoc = async <CollectionName extends keyof CollectionModels>(
   id: string
 ): Promise<CollectionModels[CollectionName]> => {
   getBeAppNext()
-  console.log("readDoc", collectionName, id)
   const firestore = getFirestore()
   const snap = await firestore.collection(collectionName).doc(id).get()
   return { ...snap.data(), uid: id } as CollectionModels[CollectionName]
@@ -122,41 +121,6 @@ export const countDocs = async <CollectionName extends keyof CollectionModels>(
   const snap = await query.count().get()
   return snap.data().count
 }
-
-// export const pitForQuery = async <
-//   CollectionName extends keyof CollectionModels,
-// >(
-//   collectionName: CollectionName,
-//   buildQuery: (
-//     ref: CollectionReferenceWithTypedWhere<CollectionModels[CollectionName]>
-//   ) => QueryWithTypedWhere<CollectionModels[CollectionName]>,
-//   readTime: Timestamp
-// ): Promise<CollectionModels[CollectionName][]> => {
-//   const firestore = getFirestore()
-//   const ref = firestore
-//     .collection(collectionName)
-//     .withConverter(
-//       buildConverterForTypeAdmin<CollectionModels[CollectionName]>()
-//     )
-//   const query = buildQuery(
-//     ref as CollectionReferenceWithTypedWhere<CollectionModels[CollectionName]>
-//   )
-
-//   const minuteGranularity = new Timestamp(
-//     moment.utc(readTime.toDate()).startOf("minute").unix(),
-//     0
-//   )
-
-//   const querySnapshot = await firestore.runTransaction(
-//     (updateFunction) =>
-//       updateFunction.get(query as Query<CollectionModels[CollectionName]>),
-//     { readOnly: true, readTime: minuteGranularity }
-//   )
-
-//   return querySnapshot.docs.map((doc) =>
-//     doc.data()
-//   ) as CollectionModels[CollectionName][]
-// }
 
 export const runTransaction = async <
   CollectionName extends keyof CollectionModels,
