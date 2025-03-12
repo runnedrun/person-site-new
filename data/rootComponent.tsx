@@ -11,7 +11,6 @@ import { DataWithoutStatics, splitDataAndStatics } from "./DataWithStatics"
 import { ServerDataReceiverComponent } from "./ServerDataReceiverComponent"
 import { JSX } from "react"
 import { queryObs } from "./readerFe"
-import { toBeQueryBuilder } from "./toBeQueryBuilder"
 
 export type PassFromServerToClientProp<
   InitialValuesType extends Record<string, unknown>,

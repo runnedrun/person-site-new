@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
         "./writerBe": {
           browser: "./shims/ModuleStub.js",
         },
+        "./toBeQueryBuilder": {
+          browser: "./shims/ModuleStub.js",
+        },
       },
     },
   },
