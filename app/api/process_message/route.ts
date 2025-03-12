@@ -11,6 +11,8 @@ import Anthropic from "@anthropic-ai/sdk"
 import { TextBlock, ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs"
 import { URLReaderImpl, URLReaderInput } from "@/lib/tools/URLReaderImpl"
 import { getSecretAbout } from "@/sanity/getSecretAbout"
+import { setDoc } from "@/data/writer"
+import { readQuery, readDoc } from "@/data/reader"
 const { combine, errors, timestamp } = format
 
 const baseFormat = combine(
@@ -86,28 +88,29 @@ export async function POST(req: NextRequest) {
     const { messageId } = await req.json()
 
     // Get the QA pairing
-    const qaDoc = await db.collection("qaPairings").doc(messageId).get()
-    const previousQuestions = await db
-      .collection("qaPairings")
-      .where("askedBy", "==", qaDoc.data()?.askedBy)
-      .orderBy("createdAt", "desc")
-      .limit(3)
-      .get()
+    const qaDoc = await readDoc("qaPairings", messageId)
 
-    if (!qaDoc.exists) {
+    const previousQuestions = await readQuery(
+      "qaPairings",
+      ({ where, orderBy, limit }) => [
+        where("askedBy", "==", qaDoc.askedBy),
+        orderBy("createdAt", "desc"),
+        limit(3),
+      ]
+    )
+
+    if (!qaDoc?.createdAt) {
       return NextResponse.json(
         { error: "QA pairing not found" },
         { status: 404 }
       )
     }
 
-    const previousQuestionsString = previousQuestions.docs
+    const previousQuestionsString = previousQuestions
       .reverse()
       .map((doc) => {
-        const answerString = doc.data().answer
-          ? `Answer: ${doc.data().answer}\n`
-          : ""
-        return `Question: ${doc.data().question}${answerString}`
+        const answerString = doc.answer ? `Answer: ${doc.answer}\n` : ""
+        return `Question: ${doc.question}${answerString}`
       })
       .join("\n")
 
@@ -196,14 +199,11 @@ Remember:
           const claudeResponse = (toolResponse.content[0] as TextBlock).text
 
           // Update QA pairing with response
-          await db
-            .collection("qaPairings")
-            .doc(messageId)
-            .update({
-              answer: claudeResponse,
-              serializedAnswer: await serialize(claudeResponse),
-              answeredAt: Timestamp.now(),
-            } as Partial<QAPairing>)
+          await setDoc("qaPairings", messageId, {
+            answer: claudeResponse,
+            serializedAnswer: await serialize(claudeResponse),
+            answeredAt: Timestamp.now(),
+          } as Partial<QAPairing>)
 
           return NextResponse.json({ success: true })
         } catch (error) {
@@ -220,14 +220,11 @@ Remember:
     const claudeResponse = (completion.content[0] as TextBlock).text
 
     // Update QA pairing with response
-    await db
-      .collection("qaPairings")
-      .doc(messageId)
-      .update({
-        answer: claudeResponse,
-        serializedAnswer: await serialize(claudeResponse),
-        answeredAt: Timestamp.now(),
-      } as Partial<QAPairing>)
+    await setDoc("qaPairings", messageId, {
+      answer: claudeResponse,
+      serializedAnswer: await serialize(claudeResponse),
+      answeredAt: Timestamp.now(),
+    } as Partial<QAPairing>)
 
     return NextResponse.json({ success: true })
   } catch (error: any) {

@@ -2,6 +2,7 @@ import {
   combineLatest,
   distinctUntilChanged,
   filter,
+  firstValueFrom,
   from,
   isObservable,
   map,
@@ -20,6 +21,7 @@ import {
   DocumentSnapshot,
   getCountFromServer,
   getDoc,
+  getDocs,
   limit,
   onSnapshot,
   or,
@@ -269,8 +271,9 @@ export type PossibleQueryConstraint =
   | QueryOrderByConstraint
   | QueryStartAtConstraint
   | QueryEndAtConstraint
+  | null
 
-export type BuilderReturnType = OrObservable<PossibleQueryConstraint>[]
+export type BuilderReturnType = (OrObservable<PossibleQueryConstraint> | null)[]
 
 export type BuilderFilters<CollectionName extends keyof AllModels> = {
   where: TypedWhere<AllModels[CollectionName]>
@@ -296,9 +299,9 @@ export const buildQueryWithDefaultBuilders = <
     or: orWithObservable,
     and: andWithObservable,
   }).filter(Boolean)
-  const queryConstraintsObs = queryConstraintsOrObs.map((_) =>
-    isObservable(_) ? _ : of(_)
-  )
+  const queryConstraintsObs = queryConstraintsOrObs
+    .filter(Boolean)
+    .map((_) => (isObservable(_) ? _ : of(_)))
   const orEmpty = queryConstraintsObs.length
     ? queryConstraintsObs
     : ([] as Observable<PossibleQueryConstraint>[])
@@ -382,4 +385,16 @@ export const countObs = <CollectionName extends keyof AllModels>(
       return from(getCountFromServer(queryObs)).pipe(map((_) => _.data().count))
     })
   )
+}
+
+export const readQuery = async <CollectionName extends keyof AllModels>(
+  collectionName: CollectionName,
+  buildQuery: TypedQueryBuilder<CollectionName>
+): Promise<AllModels[CollectionName][]> => {
+  const finalQuery = await firstValueFrom(
+    buildQueryObs(collectionName, buildQuery)
+  )
+
+  const snapshot = await getDocs(finalQuery)
+  return mapQuerySnapshotToModel<AllModels[CollectionName]>()(snapshot)
 }

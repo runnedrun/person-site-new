@@ -4,9 +4,13 @@ import { AllModels } from "./CollectionModels"
 import { PossibleQueryConstraint } from "./readerFe"
 import { BeQueryBuilder, QueryWithTypedWhere } from "./readerBe"
 
+type Field = {
+  segments: string[]
+}
+
 type QueryConstraint = {
   type: "where" | "and" | "or" | "orderBy" | "limit"
-  _field?: string
+  _field?: Field
   _op?: WhereFilterOp
   _value?: any
   _limit?: number
@@ -16,6 +20,10 @@ type QueryConstraint = {
 type CompositeQuery = {
   type: "and" | "or"
   _queryConstraints: QueryConstraint[]
+}
+
+const getFieldStringFromField = (field: Field) => {
+  return field.segments.join(".")
 }
 
 export const toBeQueryBuilder = <CollectionName extends keyof AllModels>(
@@ -30,11 +38,11 @@ export const toBeQueryBuilder = <CollectionName extends keyof AllModels>(
       switch (constraint.type) {
         case "where":
           query = query.where(
-            Filter.where(
-              (constraint as QueryConstraint)._field as string,
-              (constraint as QueryConstraint)._op as WhereFilterOp,
-              (constraint as QueryConstraint)._value
-            )
+            getFieldStringFromField(
+              (constraint as QueryConstraint)._field!
+            ) as any,
+            (constraint as QueryConstraint)._op as WhereFilterOp,
+            (constraint as QueryConstraint)._value
           )
           break
         case "and":
@@ -42,9 +50,9 @@ export const toBeQueryBuilder = <CollectionName extends keyof AllModels>(
             Filter.and(
               ...(constraint as CompositeQuery)._queryConstraints.map((f) =>
                 Filter.where(
-                  f._field as string,
-                  f._op as WhereFilterOp,
-                  f._value
+                  getFieldStringFromField((f as QueryConstraint)._field!),
+                  (f as QueryConstraint)._op as WhereFilterOp,
+                  (f as QueryConstraint)._value
                 )
               )
             )
@@ -55,9 +63,9 @@ export const toBeQueryBuilder = <CollectionName extends keyof AllModels>(
             Filter.or(
               ...(constraint as CompositeQuery)._queryConstraints.map((f) =>
                 Filter.where(
-                  f._field as string,
-                  f._op as WhereFilterOp,
-                  f._value
+                  getFieldStringFromField((f as QueryConstraint)._field!),
+                  (f as QueryConstraint)._op as WhereFilterOp,
+                  (f as QueryConstraint)._value
                 )
               )
             )
@@ -65,7 +73,9 @@ export const toBeQueryBuilder = <CollectionName extends keyof AllModels>(
           break
         case "orderBy":
           query = query.orderBy(
-            (constraint as QueryConstraint)._field as any,
+            getFieldStringFromField(
+              (constraint as QueryConstraint)._field!
+            ) as any,
             (constraint as QueryConstraint)._direction as OrderByDirection
           )
           break

@@ -1,4 +1,4 @@
-import { Observable, from } from "rxjs"
+import { Observable, firstValueFrom, from } from "rxjs"
 import { map, switchMap } from "rxjs/operators"
 import { AllModels } from "./CollectionModels"
 import { isServerside } from "./helpers/isServerside"
@@ -57,6 +57,24 @@ export const docObs = <CollectionName extends keyof AllModels>(
       return readerFe.docObs(collectionName, id)
     })
   )
+}
+
+export const readQuery = <CollectionName extends keyof AllModels>(
+  collectionName: CollectionName,
+  buildQuery: readerFe.TypedQueryBuilder<CollectionName>
+): Promise<AllModels[CollectionName][]> => {
+  const beReader = getBeReader()
+  if (beReader) {
+    return firstValueFrom(
+      readerFe.buildQueryWithDefaultBuilders(buildQuery).pipe(
+        map((constraints) => toBeQueryBuilder<CollectionName>(constraints)),
+        switchMap((beBuilder) =>
+          from(beReader.queryDocs(collectionName, beBuilder))
+        )
+      )
+    )
+  }
+  return readerFe.readQuery(collectionName, buildQuery)
 }
 
 export const queryObs = <CollectionName extends keyof AllModels>(
