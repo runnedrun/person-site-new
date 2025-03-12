@@ -6,10 +6,10 @@ import {
   PartialWithFieldValue,
   Timestamp,
   collection,
-  deleteDoc,
+  deleteDoc as fbDeleteDoc,
   doc,
   getFirestore,
-  setDoc,
+  setDoc as fbSetDoc,
   writeBatch,
 } from "firebase/firestore"
 import { chunk } from "lodash"
@@ -26,7 +26,7 @@ export const genExtraData = () => {
 
 export const backendNow = () => Timestamp.now()
 
-export const fbSet = async <CollectionName extends keyof AllModels>(
+export const setDoc = async <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
   docId: string,
   data: PartialWithFieldValue<AllModels[CollectionName]>
@@ -34,7 +34,7 @@ export const fbSet = async <CollectionName extends keyof AllModels>(
   init()
   const firestore = getFirestore()
 
-  await setDoc(
+  await fbSetDoc(
     doc(firestore, collectionName, docId),
     {
       updatedAt: Timestamp.now(),
@@ -46,24 +46,24 @@ export const fbSet = async <CollectionName extends keyof AllModels>(
   return doc(firestore, collectionName, docId)
 }
 
-export const fbDelete = async <CollectionName extends keyof AllModels>(
+export const deleteDoc = async <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
   docId: string
 ) => {
   const firestore = getFirestore()
 
-  await deleteDoc(doc(firestore, collectionName, docId))
+  await fbDeleteDoc(doc(firestore, collectionName, docId))
 }
 
-export const fbUpdate = async <CollectionName extends keyof AllModels>(
+export const updateDoc = async <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
   docId: string,
   data: Partial<AllModels[CollectionName]>
 ) => {
-  return fbSet(collectionName, docId, data)
+  return setDoc(collectionName, docId, data)
 }
 
-export const fbCreate = async <Key extends keyof CollectionModels>(
+export const createDoc = async <Key extends keyof CollectionModels>(
   collectionName: Key,
   data: Omit<AllModels[Key], keyof ModelBase>,
   opts?: CreateOptions
@@ -71,7 +71,7 @@ export const fbCreate = async <Key extends keyof CollectionModels>(
   const firestore = getFirestore()
   const id = opts?.id ?? getUuid()
   const ref = doc(firestore, collectionName, id)
-  await setDoc(
+  await fbSetDoc(
     ref,
     {
       ...genExtraData(),
@@ -82,7 +82,7 @@ export const fbCreate = async <Key extends keyof CollectionModels>(
   return ref
 }
 
-export const fbBatchSet = async <CollectionName extends keyof AllModels>(
+export const batchSet = async <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
   records: AllModels[CollectionName][],
   getDocKey?: (record: AllModels[CollectionName], i: number) => string,
@@ -121,7 +121,7 @@ export const fbBatchSet = async <CollectionName extends keyof AllModels>(
   )
 }
 
-export const fbBatchDelete = async <CollectionName extends keyof AllModels>(
+export const batchDelete = async <CollectionName extends keyof AllModels>(
   collectionName: CollectionName,
   recordIds: string[],
   batchSize: number = 100

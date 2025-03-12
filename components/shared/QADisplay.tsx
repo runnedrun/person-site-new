@@ -3,7 +3,7 @@ import { isNotNil } from "@/data/helpers/isUndefTyped"
 import { queryObs } from "@/data/readerFe"
 import { QAPairing } from "@/data/types/QAPairing"
 import { useObs } from "@/data/useObs"
-import { fbCreate } from "@/data/writerFe"
+import { createDoc } from "@/data/writerFe"
 import { useMDXComponents } from "@/mdx-components"
 import { orderBy, Timestamp } from "firebase/firestore"
 import { isNil, uniqBy } from "lodash"
@@ -136,7 +136,7 @@ export const QADisplay = () => {
       question,
       question_length: question.length,
     })
-    const ref = await fbCreate("qaPairings", newQA)
+    const ref = await createDoc("qaPairings", newQA)
 
     // Trigger answer processing
     await fetch("/api/process_message", {

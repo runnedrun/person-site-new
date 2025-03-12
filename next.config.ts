@@ -31,7 +31,10 @@ const nextConfig: NextConfig = {
         querystring: { browser: "./shims/ModuleStub.js" },
         request: { browser: "./shims/ModuleStub.js" },
         url: { browser: "./shims/ModuleStub.js" },
-        "@/data/readerBe": {
+        "./readerBe": {
+          browser: "./shims/ModuleStub.js",
+        },
+        "./writerBe": {
           browser: "./shims/ModuleStub.js",
         },
       },
