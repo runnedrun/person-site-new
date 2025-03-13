@@ -54,6 +54,7 @@ export const deleteDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   await firestore.collection(collectionName).doc(docId).delete()
 }
@@ -63,6 +64,7 @@ export const updateDoc = async <CollectionName extends keyof CollectionModels>(
   docId: string,
   data: Partial<CollectionModels[CollectionName]>
 ) => {
+  getBeAppNext()
   return setDoc(collectionName, docId, data)
 }
 
@@ -71,6 +73,7 @@ export const createDoc = async <Key extends keyof CollectionModels>(
   data: Omit<CollectionModels[Key], keyof ModelBase>,
   opts?: CreateOptions
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   const id = opts?.id ?? getUuid()
   const ref = firestore.collection(collectionName).doc(id)
@@ -90,6 +93,7 @@ export const batchSet = async <CollectionName extends keyof CollectionModels>(
   getDocKey?: (record: CollectionModels[CollectionName], i: number) => string,
   batchSize: number = 100
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   const chunked = chunk(records, batchSize)
   const entries = Array.from(chunked.entries())
@@ -130,6 +134,7 @@ export const batchDelete = async <
   recordIds: string[],
   batchSize: number = 100
 ) => {
+  getBeAppNext()
   const firestore = getFirestore()
   const chunked = chunk(recordIds, batchSize)
   const entries = Array.from(chunked.entries())
