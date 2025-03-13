@@ -1,6 +1,6 @@
 import { Observable, firstValueFrom, from } from "rxjs"
 import { map, switchMap } from "rxjs/operators"
-import { AllModels } from "./CollectionModels"
+import { CollectionModels } from "./CollectionModels"
 import { isServerside } from "./helpers/isServerside"
 import * as readerFe from "./readerFe"
 import { orObs } from "./helpers/orObs"
@@ -44,10 +44,10 @@ const getBeReader = () => {
  * @param id - The document ID to read
  * @returns Promise resolving to the document data
  */
-export const readDoc = async <CollectionName extends keyof AllModels>(
+export const readDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   id: string
-): Promise<AllModels[CollectionName]> => {
+): Promise<CollectionModels[CollectionName]> => {
   const beReader = getBeReader()
   if (beReader) {
     return beReader.readDoc(collectionName, id)
@@ -67,10 +67,10 @@ export const readDoc = async <CollectionName extends keyof AllModels>(
  * @param id - Document ID or Observable of document ID
  * @returns Observable that emits document data or null if ID is null. If the document doesn't exist, it will still an object, but the object will only have the field uid: string. Thus if you wish to check if the document exists, you should check if the field "createdAt" is set.
  */
-export const docObs = <CollectionName extends keyof AllModels>(
+export const docObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   id: string | Observable<string | null>
-): Observable<AllModels[CollectionName] | null> => {
+): Observable<CollectionModels[CollectionName] | null> => {
   const beReader = getBeReader()
   return orObs(id).pipe(
     switchMap((idValue) => {
@@ -103,10 +103,10 @@ export const docObs = <CollectionName extends keyof AllModels>(
  * @param buildQuery - Function that builds the query constraints
  * @returns Promise resolving to an array of documents
  */
-export const readQuery = <CollectionName extends keyof AllModels>(
+export const readQuery = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: readerFe.TypedQueryBuilder<CollectionName>
-): Promise<AllModels[CollectionName][]> => {
+): Promise<CollectionModels[CollectionName][]> => {
   const beReader = getBeReader()
   if (beReader) {
     return firstValueFrom(
@@ -145,10 +145,10 @@ export const readQuery = <CollectionName extends keyof AllModels>(
  * @param buildQuery - Function that builds the query constraints
  * @returns Observable that emits arrays of documents
  */
-export const queryObs = <CollectionName extends keyof AllModels>(
+export const queryObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: readerFe.TypedQueryBuilder<CollectionName>
-): Observable<AllModels[CollectionName][]> => {
+): Observable<CollectionModels[CollectionName][]> => {
   const beReader = getBeReader()
   if (beReader) {
     return readerFe.buildQueryWithDefaultBuilders(buildQuery).pipe(
@@ -176,7 +176,7 @@ export const queryObs = <CollectionName extends keyof AllModels>(
  * @param refreshObs - Observable that triggers a refresh when it emits
  * @returns Observable that emits the count of matching documents
  */
-export const countObs = <CollectionName extends keyof AllModels>(
+export const countObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: readerFe.TypedQueryBuilder<CollectionName>,
   refreshObs: Observable<unknown>

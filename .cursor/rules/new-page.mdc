@@ -1,5 +1,5 @@
 ---
-description: This rule is used whenever you would create a new page in this NextJS app. 
+description: This rule is used whenever you would create a new page in this NextJS app.
 globs: 
 alwaysApply: false
 ---
@@ -12,28 +12,86 @@ Any new files related to the new page, including new components, helpers etc, sh
 
 If there is logic shared accross files and it is a react component you can put it either in @/components/shared, if it is a hook, put it in @/hooks/shared, otherwise put it in @/helpers/.
 
-# Page data
+# Getting data from the DB into a page.
 When we make new pages we use a special setup, along with helper methods, to make it easy to use the same data fetching logic for the intitial fetch on the server as for the real time listeners which are mounted on the client.
+Here are the steps you must take:
 
-Every new page should, unless otherwise noted have 3 files initially created:
+## Step 1) Create Data Functions object
+Every page should have an associated dataFns object in it's own file. This function returns a map like { [dataName]: $dataObservable }. Here is an example:
 
-1) page.tsx - Use the structure in [page.tsx](mdc:app/example/page.tsx). This is a simple file which just exports the result of [rootComponent.tsx](mdc:data/rootComponent.tsx) , which provides data from the given data function to the given ServerDataReceiver component.
+// [pageName]/[pageName]DataFunctions.ts
+import { dataFn } from "@/data/dataFn"
+import { map } from "rxjs"
 
-2) pageNameDataFunctions (replace pageName) - use the structure in [examplePageDataFunctions.ts](mdc:app/example/examplePageDataFunctions.ts). This is a file that exports an object with the same name as the function. That object maps namespaces to fns which themselves return an object mapping names to observables. 
-Note: 
-you MUST use [dataFn.tsx](mdc:data/dataFn.tsx) to construct each data function you export in the data function map. That is a tricky function, it must be called with two parentheses ()(), as it is in [examplePageDataFunctions.ts](mdc:app/example/examplePageDataFunctions.ts).
+const defaultParams = {
+  isUppercase: false,
+}
 
-3) PageNameClientComponent.tsx (replace PageName) - use the structure in [ExamplePageClientComponent.tsx](mdc:app/example/ExamplePageClientComponent.tsx). This is a file with "use client" at the top, which contains a ServerDataReceiverComponent, named the same as the file, that will receive initial values from the server then pass those into a context provider named ProvidePageNameContext. That provider and it's associated context are built using any of the data functiosn you exported from the above pageNameFunctions.
+export const examplePageDataFunctions = {
+  exampleData: dataFn(defaultParams, ({ getParam }) => {
+    const $isUppercase = getParam("isUppercase")
+    return {
+      title: $isUppercase.pipe(
+        map((isUppercase) =>
+          isUppercase ? "THIS IS A PIECE OF DATA" : "this is a piece of data"
+        )
+      ),
+    }
+  }),
+}
 
-Here is an exmaple of how it is built:
-export const [PageNameContext, ProvidePageNameContext] = buildDataContext(
-  pageNameDataFunction
+
+Note that each data function in the map of data fns MUST be a specially constructed function, built using the dataFn method shown above. The first argument is the the default query or path parameters that this data relies on. The second is a function that returns a map of observables. 
+
+This file MUST export an object called [pageName]DataFunctions, which has, as a single property, [pageName]Data: [pageName]DataFn. In the future other, shared, data functions might be added to this map, for instance a function that fetches information for the logged in user. 
+
+## Step 2) create page.tsx 
+This is a simple file which just exports the result of @rootComponent.tsx , which provides data from the given data function to the given ServerDataReceiver component. This file is the only server component we use. rootComponent is a HOC which builds a component that fetches all the data from the given data functions, then returns it to the child component as the prop _initialValues. We'll create that child component next. It will be in charge of providing the given data via a context, to all it's ancestors components. Here is an example or page.tsx:
+
+// [pageName]/page.tsx
+import { rootComponent } from "@/data/rootComponent"
+import { examplePageDataFunctions } from "./examplePageDataFunctions"
+import { ExamplePageClientDataProviders } from "./ExamplePageClientDataProviders"
+
+const ExamplePage = rootComponent(
+  examplePageDataFunctions,
+  ExamplePageClientDataProviders
 )
 
-This will allow child components to consume data from the given data function that is initially populated by the server, but then kept up to date in real time on the client. 
-
-See [page.tsx](mdc:app/example/page.tsx), [ExamplePageClientComponent.tsx](mdc:app/example/ExamplePageClientComponent.tsx) and [examplePageDataFunctions.ts](mdc:app/example/examplePageDataFunctions.ts) for examples of each of the above.
+export default ExamplePage
 
 
+## Step 3) create [pageName]ClientDataProviders.tsx
+This file will ingest the data that was prefetched by the rootComponent in page.tsx, and then simply pass it to a react Context provider, to be used in other display components. This is a "use client" file. Here is an example:
+
+// [pageName]/[pageName]ClientDataProviders.tsx
+"use client"
+import { buildDataContext } from "@/data/context/buildDataContext"
+import { examplePageDataFunctions } from "./examplePageDataFunctions"
+import { ServerDataReceiverComponent } from "@/data/ServerDataReceiverComponent"
+import { useContext } from "react"
+
+export const [ExamplePageContext, ProvideExamplePageContext] = buildDataContext(
+  examplePageDataFunctions.exampleData
+)
+
+const ExampleDisplay = () => {
+  const { title } = useContext(ExamplePageContext)
+  return <div>{title}</div>
+}
+
+export const ExamplePageClientDataProviders: ServerDataReceiverComponent<
+  typeof examplePageDataFunctions
+> = ({ params, _initialValues }) => {
+  return (
+    <ProvideExamplePageContext
+      params={params}
+      _initialValues={_initialValues?.exampleData}
+    >
+      <ExampleDisplay></ExampleDisplay>
+    </ProvideExamplePageContext>
+  )
+}
 
 
+Note that this file MUST contstruct the context and provider for the data fn we created in [pageName]DataFunctions, using the special buildDataContext method. Then it must use that provider, passing in the params and _initialValues that were prefetched in the rootComponent. 

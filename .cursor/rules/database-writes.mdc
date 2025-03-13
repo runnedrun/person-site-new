@@ -1,0 +1,50 @@
+---
+description: This rule is used whenever you need to write something to our firestore db, which is our default datastore unless otherwise specified.
+globs: 
+alwaysApply: false
+---
+# Writing to the db
+All writes to the database, whether from the backend or frontend should use the methods in the file [writer.ts](mdc:data/writer.ts) (data/writer).
+
+Here are the methods available in data/writer.ts
+
+// 1. Set/Replace an entire document
+await setDoc('collectionName', 'documentId', {
+  field1: 'value1',
+  field2: 'value2'
+});
+
+// 2. Delete a document
+await deleteDoc('collectionName', 'documentId');
+
+// 3. Update specific fields in a document
+await updateDoc('collectionName', 'documentId', {
+  fieldToUpdate: 'newValue',
+  anotherField: 123
+});
+
+// 4. Create a new document (automatically adds createdAt, updatedAt)
+await createDoc('collectionName', {
+  field1: 'value1',
+  field2: 'value2'
+}, {
+  id: 'optional-custom-id' // optional, if not provided will autogenerate the id
+});
+
+// 5. Batch set multiple documents
+const records = [
+  { field1: 'value1', field2: 'value2' },
+  { field1: 'value3', field2: 'value4' }
+];
+await batchSet('collectionName', records, 
+  (record, index) => `custom-id-${index}`, // optional key generator
+  100 // optional batch size, default 100
+);
+
+// 6. Batch delete multiple documents
+await batchDelete('collectionName', 
+  ['docId1', 'docId2', 'docId3'],
+  100 // optional batch size, default 100
+);
+
+Each method is typed so it only allows you to pass in collection names and model types listed in [CollectionModels.ts](mdc:data/CollectionModels.ts)

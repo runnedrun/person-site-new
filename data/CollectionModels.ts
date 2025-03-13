@@ -1,9 +1,5 @@
 import { QAPairing } from "./types/QAPairing"
 
-export const CollectionNames: (keyof AllModels)[] = ["qaPairings"] as const
-
-export type AllModels = {
+export type CollectionModels = {
   qaPairings: QAPairing
 }
-
-export type CollectionModels = Omit<AllModels, "user">

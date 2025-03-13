@@ -8,8 +8,38 @@ alwaysApply: false
 
 All the existing models and their corresponding firestore collection names can be found in [CollectionModels.ts](mdc:data/CollectionModels.ts)
 
-If you need to store data in a collection that isn't listed there, you can create a new model for that data in the folder data/types. The data model is just a Record type wrapped in a Model<> generic type. See [QAPairing.ts](mdc:data/types/QAPairing.ts) for an example. 
+If you need to store data in a collection that isn't listed there, you can create a new model for that data. Here are the steps:
 
-Once you've created the model there you can add the name for the collection where the model will be stored in [CollectionModels.ts](mdc:data/CollectionModels.ts), then you can use that collection name with all the methods in [reader.ts](mdc:data/reader.ts) and [writer.ts](mdc:data/writer.ts).
+## Step 1) create a new file called [modelName].ts in the data/types folder. Here is an example:
+
+// types/QAMessage.ts
+import { Timestamp } from "firebase/firestore"
+import { MDXRemoteSerializeResult } from "next-mdx-remote"
+import { Model } from "../baseTypes/Model"
+
+export type QAMessage = Model<{
+  createdAt: Timestamp
+  question: string
+  answer: string | null
+  askedBy: string // userId
+  notFound: boolean | null
+  answeredAt: Timestamp | null
+  serializedAnswer: MDXRemoteSerializeResult | null
+}>
+
+Note you MUST wrap the new model type in the Model<> generic type. The Model type adds the fields createdAt, updatedAt, archived and uid.
+
+## Step 2) 
+
+Add the model to the [CollectionModels.ts](mdc:data/CollectionModels.ts) file (data/CollectionModels). Here is an example of the same type from above, added to CollectionModels:
+
+import { QAPairing } from "./types/QAPairing"
+
+export type CollectionModels = {
+  qaPairings: QAPairing
+}
+
+Now that models collection name and associated model type will be available as arguments to the various reader/writer methods we use in this codebase.
+
 
 

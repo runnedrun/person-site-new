@@ -11,7 +11,7 @@ import {
   switchMap,
 } from "rxjs"
 
-import { AllModels } from "@/data/CollectionModels"
+import { CollectionModels } from "@/data/CollectionModels"
 import {
   and,
   collection,
@@ -79,22 +79,22 @@ export function docObsFromFbRef(
   })
 }
 
-export const readDoc = async <CollectionName extends keyof AllModels>(
+export const readDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   id: string
-): Promise<AllModels[CollectionName]> => {
+): Promise<CollectionModels[CollectionName]> => {
   const db = init()
   const snap = await getDoc(doc(db, collectionName, id))
   return {
     ...snap.data(),
     uid: id,
-  } as AllModels[CollectionName]
+  } as CollectionModels[CollectionName]
 }
 
-export const docObs = <CollectionName extends keyof AllModels>(
+export const docObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   id: string | Observable<string | null>
-): Observable<AllModels[CollectionName] | null> => {
+): Observable<CollectionModels[CollectionName] | null> => {
   if (isNull(id)) {
     return of(null)
   }
@@ -109,31 +109,32 @@ export const docObs = <CollectionName extends keyof AllModels>(
 
   let hasSeenDataFromServer = false
   const obs = docSnapshotObs.pipe(
-    map<DocumentSnapshot | null, AllModels[CollectionName] | null | undefined>(
-      (snap: DocumentSnapshot | null) => {
-        if (!snap) {
-          return null
-        }
-        const isValidServerData =
-          !snap.metadata.fromCache && !snap.metadata.hasPendingWrites
-
-        hasSeenDataFromServer = hasSeenDataFromServer || isValidServerData
-
-        if (!hasSeenDataFromServer) {
-          return undefined
-        }
-
-        return {
-          ...snap.data(),
-          uid: snap.id,
-        } as AllModels[CollectionName]
+    map<
+      DocumentSnapshot | null,
+      CollectionModels[CollectionName] | null | undefined
+    >((snap: DocumentSnapshot | null) => {
+      if (!snap) {
+        return null
       }
-    ),
+      const isValidServerData =
+        !snap.metadata.fromCache && !snap.metadata.hasPendingWrites
+
+      hasSeenDataFromServer = hasSeenDataFromServer || isValidServerData
+
+      if (!hasSeenDataFromServer) {
+        return undefined
+      }
+
+      return {
+        ...snap.data(),
+        uid: snap.id,
+      } as CollectionModels[CollectionName]
+    }),
     filter<
-      AllModels[CollectionName] | null | undefined,
-      AllModels[CollectionName] | null
+      CollectionModels[CollectionName] | null | undefined,
+      CollectionModels[CollectionName] | null
     >(isNotUndefined),
-    distinctUntilChanged<AllModels[CollectionName] | null>(isEqual)
+    distinctUntilChanged<CollectionModels[CollectionName] | null>(isEqual)
   )
   return obs
 }
@@ -155,13 +156,13 @@ export type FieldPathPathString<T> = {
     : never
 }[keyof T]
 
-export type TypedWhere<T extends ValuesType<AllModels>> = (
+export type TypedWhere<T extends ValuesType<CollectionModels>> = (
   fieldPath: keyof T | FieldPathPathString<T>,
   opStr: WhereFilterOp,
   value: WhereValues | Observable<WhereValues | typeof SKIP>
 ) => OrObservable<QueryFieldFilterConstraint>
 
-export type TypedOrderBy<T extends ValuesType<AllModels>> = (
+export type TypedOrderBy<T extends ValuesType<CollectionModels>> = (
   fieldPath: keyof T | FieldPathPathString<T>,
   directionStr?: Observable<OrderByDirection> | OrderByDirection
 ) => OrObservable<QueryOrderByConstraint>
@@ -185,7 +186,7 @@ const andWithObservable: TypedAnd = (...whereClauses) => {
 }
 
 const mapQuerySnapshotToModel =
-  <ModelType extends ValuesType<AllModels>>() =>
+  <ModelType extends ValuesType<CollectionModels>>() =>
   (_: QuerySnapshot) => {
     return _.docs.map((docToMap) => {
       return { ...docToMap.data(), uid: docToMap.id } as ModelType
@@ -276,26 +277,28 @@ export type PossibleQueryConstraint =
 
 export type BuilderReturnType = (OrObservable<PossibleQueryConstraint> | null)[]
 
-export type BuilderFilters<CollectionName extends keyof AllModels> = {
-  where: TypedWhere<AllModels[CollectionName]>
-  orderBy: TypedOrderBy<AllModels[CollectionName]>
+export type BuilderFilters<CollectionName extends keyof CollectionModels> = {
+  where: TypedWhere<CollectionModels[CollectionName]>
+  orderBy: TypedOrderBy<CollectionModels[CollectionName]>
   limit: TypedLimit
   or: TypedOr
   and: TypedAnd
 }
 
-export type TypedQueryBuilder<CollectionName extends keyof AllModels> = (
+export type TypedQueryBuilder<CollectionName extends keyof CollectionModels> = (
   filters: BuilderFilters<CollectionName>
 ) => BuilderReturnType
 
 export const buildQueryWithDefaultBuilders = <
-  CollectionName extends keyof AllModels,
+  CollectionName extends keyof CollectionModels,
 >(
   buildQuery: TypedQueryBuilder<CollectionName>
 ) => {
   const queryConstraintsOrObs = buildQuery({
-    where: whereWithObservable as TypedWhere<AllModels[CollectionName]>,
-    orderBy: orderByWithObservable as TypedOrderBy<AllModels[CollectionName]>,
+    where: whereWithObservable as TypedWhere<CollectionModels[CollectionName]>,
+    orderBy: orderByWithObservable as TypedOrderBy<
+      CollectionModels[CollectionName]
+    >,
     limit: limitWithObservable,
     or: orWithObservable,
     and: andWithObservable,
@@ -310,7 +313,7 @@ export const buildQueryWithDefaultBuilders = <
   return combineLatest(orEmpty)
 }
 
-export const buildQueryObs = <CollectionName extends keyof AllModels>(
+export const buildQueryObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: TypedQueryBuilder<CollectionName>
 ): Observable<Query<DocumentData>> => {
@@ -344,10 +347,10 @@ export const buildQueryObs = <CollectionName extends keyof AllModels>(
   )
 }
 
-export const queryObs = <CollectionName extends keyof AllModels>(
+export const queryObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: TypedQueryBuilder<CollectionName>
-): Observable<AllModels[CollectionName][]> => {
+): Observable<CollectionModels[CollectionName][]> => {
   return buildQueryObs(collectionName, buildQuery).pipe(
     switchMap((finalQuery) => {
       const obs = queryObsFromFbRef(finalQuery)
@@ -364,7 +367,9 @@ export const queryObs = <CollectionName extends keyof AllModels>(
             return null
           }
 
-          return mapQuerySnapshotToModel<AllModels[CollectionName]>()(snapshot)
+          return mapQuerySnapshotToModel<CollectionModels[CollectionName]>()(
+            snapshot
+          )
         }),
         filter(Boolean),
         distinctUntilChanged(isEqual)
@@ -373,7 +378,7 @@ export const queryObs = <CollectionName extends keyof AllModels>(
   )
 }
 
-export const countObs = <CollectionName extends keyof AllModels>(
+export const countObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: TypedQueryBuilder<CollectionName>,
   refreshObs: Observable<unknown>
@@ -388,14 +393,14 @@ export const countObs = <CollectionName extends keyof AllModels>(
   )
 }
 
-export const readQuery = async <CollectionName extends keyof AllModels>(
+export const readQuery = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   buildQuery: TypedQueryBuilder<CollectionName>
-): Promise<AllModels[CollectionName][]> => {
+): Promise<CollectionModels[CollectionName][]> => {
   const finalQuery = await firstValueFrom(
     buildQueryObs(collectionName, buildQuery)
   )
 
   const snapshot = await getDocs(finalQuery)
-  return mapQuerySnapshotToModel<AllModels[CollectionName]>()(snapshot)
+  return mapQuerySnapshotToModel<CollectionModels[CollectionName]>()(snapshot)
 }

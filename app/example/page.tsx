@@ -1,10 +1,10 @@
 import { rootComponent } from "@/data/rootComponent"
 import { examplePageDataFunctions } from "./examplePageDataFunctions"
-import { ExamplePageClientComponent } from "./ExamplePageClientComponent"
+import { ExamplePageClientDataProviders } from "./ExamplePageClientDataProviders"
 
 const ExamplePage = rootComponent(
   examplePageDataFunctions,
-  ExamplePageClientComponent
+  ExamplePageClientDataProviders
 )
 
 export default ExamplePage

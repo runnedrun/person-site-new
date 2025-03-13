@@ -1,6 +1,6 @@
 import { WhereFilterOp, OrderByDirection } from "@firebase/firestore"
 import { Filter } from "@google-cloud/firestore"
-import { AllModels } from "./CollectionModels"
+import { CollectionModels } from "./CollectionModels"
 import { PossibleQueryConstraint } from "./readerFe"
 import { BeQueryBuilder, QueryWithTypedWhere } from "./readerBe"
 
@@ -26,11 +26,11 @@ const getFieldStringFromField = (field: Field) => {
   return field.segments.join(".")
 }
 
-export const toBeQueryBuilder = <CollectionName extends keyof AllModels>(
+export const toBeQueryBuilder = <CollectionName extends keyof CollectionModels>(
   constraints: PossibleQueryConstraint[]
 ): BeQueryBuilder<CollectionName> => {
   return (ref) => {
-    let query = ref as QueryWithTypedWhere<AllModels[CollectionName]>
+    let query = ref as QueryWithTypedWhere<CollectionModels[CollectionName]>
 
     for (const constraint of constraints) {
       if (!constraint) continue

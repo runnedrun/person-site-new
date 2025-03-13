@@ -1,5 +1,5 @@
 import { ModelBase } from "@/data/baseTypes/Model"
-import { AllModels, CollectionModels } from "@/data/CollectionModels"
+import { CollectionModels } from "@/data/CollectionModels"
 import { CreateOptions } from "@/data/helpers/CreateOptions"
 import batchPromises from "batch-promises"
 import {
@@ -26,10 +26,10 @@ export const genExtraData = () => {
 
 export const backendNow = () => Timestamp.now()
 
-export const setDoc = async <CollectionName extends keyof AllModels>(
+export const setDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string,
-  data: PartialWithFieldValue<AllModels[CollectionName]>
+  data: PartialWithFieldValue<CollectionModels[CollectionName]>
 ) => {
   init()
   const firestore = getFirestore()
@@ -46,7 +46,7 @@ export const setDoc = async <CollectionName extends keyof AllModels>(
   return doc(firestore, collectionName, docId)
 }
 
-export const deleteDoc = async <CollectionName extends keyof AllModels>(
+export const deleteDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string
 ) => {
@@ -55,17 +55,17 @@ export const deleteDoc = async <CollectionName extends keyof AllModels>(
   await fbDeleteDoc(doc(firestore, collectionName, docId))
 }
 
-export const updateDoc = async <CollectionName extends keyof AllModels>(
+export const updateDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string,
-  data: Partial<AllModels[CollectionName]>
+  data: Partial<CollectionModels[CollectionName]>
 ) => {
   return setDoc(collectionName, docId, data)
 }
 
 export const createDoc = async <Key extends keyof CollectionModels>(
   collectionName: Key,
-  data: Omit<AllModels[Key], keyof ModelBase>,
+  data: Omit<CollectionModels[Key], keyof ModelBase>,
   opts?: CreateOptions
 ) => {
   const firestore = getFirestore()
@@ -82,10 +82,10 @@ export const createDoc = async <Key extends keyof CollectionModels>(
   return ref
 }
 
-export const batchSet = async <CollectionName extends keyof AllModels>(
+export const batchSet = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
-  records: AllModels[CollectionName][],
-  getDocKey?: (record: AllModels[CollectionName], i: number) => string,
+  records: CollectionModels[CollectionName][],
+  getDocKey?: (record: CollectionModels[CollectionName], i: number) => string,
   batchSize: number = 100
 ) => {
   const firestore = getFirestore()
@@ -97,14 +97,14 @@ export const batchSet = async <CollectionName extends keyof AllModels>(
     entries,
     async ([batchIndex, sentenceBatch]: [
       number,
-      AllModels[CollectionName][],
+      CollectionModels[CollectionName][],
     ]) => {
       const writer = writeBatch(firestore)
       sentenceBatch.forEach((record, sentenceIndex) => {
         const recordToWrite = {
           ...record,
           ...genExtraData(),
-        } as AllModels[CollectionName]
+        } as CollectionModels[CollectionName]
 
         const recordRef = getDocKey
           ? doc(
@@ -121,7 +121,9 @@ export const batchSet = async <CollectionName extends keyof AllModels>(
   )
 }
 
-export const batchDelete = async <CollectionName extends keyof AllModels>(
+export const batchDelete = async <
+  CollectionName extends keyof CollectionModels,
+>(
   collectionName: CollectionName,
   recordIds: string[],
   batchSize: number = 100

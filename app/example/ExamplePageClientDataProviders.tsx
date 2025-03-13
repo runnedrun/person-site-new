@@ -1,14 +1,11 @@
 "use client"
 import { buildDataContext } from "@/data/context/buildDataContext"
-import {
-  examplePageDataFunction,
-  examplePageDataFunctions,
-} from "./examplePageDataFunctions"
+import { examplePageDataFunctions } from "./examplePageDataFunctions"
 import { ServerDataReceiverComponent } from "@/data/ServerDataReceiverComponent"
 import { useContext } from "react"
 
 export const [ExamplePageContext, ProvideExamplePageContext] = buildDataContext(
-  examplePageDataFunction
+  examplePageDataFunctions.exampleData
 )
 
 const ExampleDisplay = () => {
@@ -16,7 +13,7 @@ const ExampleDisplay = () => {
   return <div>{title}</div>
 }
 
-export const ExamplePageClientComponent: ServerDataReceiverComponent<
+export const ExamplePageClientDataProviders: ServerDataReceiverComponent<
   typeof examplePageDataFunctions
 > = ({ params, _initialValues }) => {
   return (

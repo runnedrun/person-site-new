@@ -1,0 +1,67 @@
+---
+description: this rule is used whenever you need to read from the firestore db on the backend OR frontend (which is our default datastore unless otherwise specified)
+globs: 
+alwaysApply: false
+---
+# Reading from the db
+All reads from the database, whether from the backend or frontend should use the methods in the file [reader.ts](mdc:data/reader.ts) (data/reader). That file automatically usese the correct apis for either firebase-admin or firebase.
+
+Here are the methods available in data/reader.ts
+
+// readDoc - Reads a single document from a collection by its ID. Returns Promise<ModelType>. If the record doesn't exist returns an object with only the id passed, like {uid: id}.
+const userDoc = await readDoc("users", "user123");
+
+// docObs - Creates an Observable that emits document data whenever it changes. Returns Observable<ModelType>. If the record doesn't exist returns an object with only the id passed, like {uid: id}.
+const userObs = docObs("users", "user123");
+// Or with dynamic ID from another Observable
+const selectedUserId$ = new Observable<string>();
+const dynamicUserObs = docObs("users", selectedUserId$);
+
+// readQuery - Executes a query against a collection and returns results as a Promise<ModelType[]>
+const activeUsers = await readQuery("users", ({ where, orderBy, limit }) => [
+    where("isActive", "==", true),
+    orderBy("lastLoginDate", "desc"),
+    limit(10)
+]);
+
+// queryObs - Creates an Observable that emits query results whenever the underlying data changes. returns Observable<ModelType[]>
+const activeUsersObs = queryObs("users", ({ where, orderBy }) => [
+    where("isActive", "==", true),
+    orderBy("lastLoginDate", "desc")
+]);
+
+// countObs - Creates an Observable that emits the count of documents matching a query returns Observable<number>
+const refreshTrigger$ = new Observable<void>();
+const activeUserCount$ = countObs(
+    "users",
+    ({ where }) => [where("isActive", "==", true)],
+    refreshTrigger$
+);
+
+Each method is typed so it only allows you to pass in collection names listed in [CollectionModels.ts](mdc:data/CollectionModels.ts), and returns the correctly types based on the collection name passed. All models shared the following fields:
+
+uid?: string
+archived?: boolean
+archivedOn?: Timestamp
+createdAt?: Timestamp
+updatedAt?: Timestamp
+
+
+
+# getting data from the db in a react component
+If you use these methods anywhere on the backend or outside a react component or hook, they can be used as is.
+
+If you want to fetch data directly inside a react component or hook, use the useObs hook from @useObs.tsx. Here is an example:
+
+const [isActive, setIsActive] = useState(false)
+
+const activeUsersObs = queryObs("users", ({ where, orderBy }) => [
+    where("isActive", "==", isActive),
+    orderBy("lastLoginDate", "desc")
+])
+
+useObs(activeUsersObs, [isActive])
+
+The second argument is a list of dependencies that cause the given observable to remount when they change.
+
+When you need to write a timestamp, use the Timestamp class from "@firebase/firestore", and you can use Timestamp.now() if you wish to write the current timestamp.

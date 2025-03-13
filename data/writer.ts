@@ -1,14 +1,9 @@
-import { AllModels, CollectionModels } from "./CollectionModels"
-import { isServerside } from "./helpers/isServerside"
-import * as writerFe from "./writerFe"
-import * as writerBe from "./writerBe"
-import {
-  DocumentReference,
-  PartialWithFieldValue,
-  Timestamp,
-} from "firebase/firestore"
 import { ModelBase } from "./baseTypes/Model"
+import { CollectionModels } from "./CollectionModels"
 import { CreateOptions } from "./helpers/CreateOptions"
+import { isServerside } from "./helpers/isServerside"
+import * as writerBe from "./writerBe"
+import * as writerFe from "./writerFe"
 
 // Helper function to get backend writer if available
 const getBeWriter = () => {
@@ -34,10 +29,10 @@ const getBeWriter = () => {
  * @param docId - The ID of the document to set
  * @param data - The data to write to the document
  */
-export const setDoc = async <CollectionName extends keyof AllModels>(
+export const setDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string,
-  data: Partial<AllModels[CollectionName]>
+  data: Partial<CollectionModels[CollectionName]>
 ) => {
   const beWriter = getBeWriter()
   if (beWriter) {
@@ -58,7 +53,7 @@ export const setDoc = async <CollectionName extends keyof AllModels>(
  * @param collectionName - The name of the collection containing the document
  * @param docId - The ID of the document to delete
  */
-export const deleteDoc = async <CollectionName extends keyof AllModels>(
+export const deleteDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string
 ) => {
@@ -86,10 +81,10 @@ export const deleteDoc = async <CollectionName extends keyof AllModels>(
  * @param docId - The ID of the document to update
  * @param data - Object containing the fields and values to update
  */
-export const updateDoc = async <CollectionName extends keyof AllModels>(
+export const updateDoc = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
   docId: string,
-  data: Partial<AllModels[CollectionName]>
+  data: Partial<CollectionModels[CollectionName]>
 ) => {
   const beWriter = getBeWriter()
   if (beWriter) {
@@ -122,7 +117,7 @@ export const updateDoc = async <CollectionName extends keyof AllModels>(
  */
 export const createDoc = async <Key extends keyof CollectionModels>(
   collectionName: Key,
-  data: Omit<AllModels[Key], keyof ModelBase>,
+  data: Omit<CollectionModels[Key], keyof ModelBase>,
   opts?: CreateOptions
 ) => {
   const beWriter = getBeWriter()
@@ -162,10 +157,10 @@ export const createDoc = async <Key extends keyof CollectionModels>(
  * @param getDocKey - Optional function to generate document IDs
  * @param batchSize - Maximum number of operations per batch (default: 100)
  */
-export const batchSet = async <CollectionName extends keyof AllModels>(
+export const batchSet = async <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
-  records: AllModels[CollectionName][],
-  getDocKey?: (record: AllModels[CollectionName], i: number) => string,
+  records: CollectionModels[CollectionName][],
+  getDocKey?: (record: CollectionModels[CollectionName], i: number) => string,
   batchSize: number = 100
 ) => {
   const beWriter = getBeWriter()
@@ -189,7 +184,9 @@ export const batchSet = async <CollectionName extends keyof AllModels>(
  * @param recordIds - Array of document IDs to delete
  * @param batchSize - Maximum number of operations per batch (default: 100)
  */
-export const batchDelete = async <CollectionName extends keyof AllModels>(
+export const batchDelete = async <
+  CollectionName extends keyof CollectionModels,
+>(
   collectionName: CollectionName,
   recordIds: string[],
   batchSize: number = 100

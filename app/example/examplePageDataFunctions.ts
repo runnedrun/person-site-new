@@ -1,10 +1,12 @@
 import { dataFn } from "@/data/dataFn"
-import { map, of } from "rxjs"
+import { map } from "rxjs"
 
-type ParamsNeededForThisDataFunction = { isUppercase: boolean }
+const defaultParams = {
+  isUppercase: false,
+}
 
-export const examplePageDataFunction =
-  dataFn<ParamsNeededForThisDataFunction>()(({ getParam }) => {
+export const examplePageDataFunctions = {
+  exampleData: dataFn(defaultParams, ({ getParam }) => {
     const $isUppercase = getParam("isUppercase")
     return {
       title: $isUppercase.pipe(
@@ -13,8 +15,5 @@ export const examplePageDataFunction =
         )
       ),
     }
-  })
-
-export const examplePageDataFunctions = {
-  exampleData: examplePageDataFunction,
+  }),
 }
