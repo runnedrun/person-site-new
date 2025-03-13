@@ -1,0 +1,24 @@
+---
+description: This rule should be used whenever you're requested to add a script which will be run on a one-off basis, instead of being used within this app, or if you are asked to add a file to the /scripts folder
+globs: 
+alwaysApply: false
+---
+Scripts that are run on a one-off basis are added to /scripts.
+
+All these scripts can use any other files in the project, however, at the top of the file they must import dotenv and then use the env file /.env.development. Here is an example script doing that:
+
+import { setDoc } from "@/data/writer"
+import dotenv from "dotenv"
+import path from "path"
+
+dotenv.config({
+  path: path.join(__dirname, "..", , ".env.development"), // this path will be different depending on the scripts location. This path will work if you are in /scripts/fileName.ts
+})
+
+const run = () => {
+  setDoc("user", "123", {
+    testData: true
+  })
+}
+
+run()
