@@ -5,7 +5,11 @@ service cloud.firestore {
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
+    match /potentialProjects/{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
 
     match /qaPairings/{document=**} {
       allow read: if true;
