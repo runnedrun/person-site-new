@@ -1,7 +1,7 @@
 import { createDoc, setDoc } from "@/data/writer"
 import { inngest } from "../../client"
 import { gatherInformation, TrendingTech } from "./gatherInformation"
-import { getCopilotPromptForProjectInforamtion } from "./getCopilotPromptForProjectInforamtion"
+import { getProjectInformationFromTech } from "./getProjectInformationFromTech"
 
 export const aggregrateProjects = inngest.createFunction(
   { id: "aggregrate-projects" },
@@ -17,12 +17,10 @@ export const aggregrateProjects = inngest.createFunction(
     )
 
     const projectsAndInformation = await Promise.all(
-      projectInformation.slice(0, 1).map((information) => {
-        return step.run(
-          "get-copilot-prompt",
-          getCopilotPromptForProjectInforamtion,
-          { information: information }
-        )
+      projectInformation.map((information) => {
+        return step.run("get-copilot-prompt", getProjectInformationFromTech, {
+          information: information,
+        })
       })
     )
 

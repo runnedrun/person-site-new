@@ -9,8 +9,7 @@ dotenv.config({
 
 const sampleProjects: PotentialProject[] = [
   {
-    technologyDemonstrated:
-      "React, TypeScript, TailwindCSS, Shadcn UI, Firebase",
+    technologyDemonstrated: "React 17",
     title: "AI-Powered Plant Care Assistant",
     description: `# Plant Care Assistant
 
@@ -29,8 +28,7 @@ Uses computer vision APIs and a plant care knowledge base to provide personalize
   },
 
   {
-    technologyDemonstrated:
-      "React, TypeScript, TailwindCSS, Shadcn UI, Firebase",
+    technologyDemonstrated: "React 17",
     title: "Code Review Summarizer",
     description: `# Code Review Summarizer
 
@@ -48,8 +46,7 @@ Perfect for tech leads and developers who review lots of PRs daily.`,
     infoSource: "https://www.google.com",
   },
   {
-    technologyDemonstrated:
-      "React, TypeScript, TailwindCSS, Shadcn UI, Firebase",
+    technologyDemonstrated: "React 17",
     title: "Recipe Cost Calculator",
     description: `# Smart Recipe Cost Calculator
 

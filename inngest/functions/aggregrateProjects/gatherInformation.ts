@@ -1,6 +1,8 @@
 import { z } from "zod"
 import OpenAI from "openai"
 import { zodTextFormat } from "openai/helpers/zod"
+import { readQuery } from "@/data/reader"
+import { PotentialProject } from "@/data/types/PotentialProject"
 
 // Initialize environment variables
 
@@ -8,7 +10,7 @@ import { zodTextFormat } from "openai/helpers/zod"
 const TrendingTechSchema = z.object({
   name: z.string(),
   description: z.string(),
-  source: z.string().describe("The source of the information"),
+  source: z.string().describe("The url for the source of the information"),
   discussionContext: z
     .string()
     .describe(
@@ -17,7 +19,7 @@ const TrendingTechSchema = z.object({
   documentationLink: z
     .string()
     .describe(
-      "A link to the documentation for how to implement the new technology"
+      "The url for the documentation for how to implement the new technology"
     ),
 })
 
@@ -36,15 +38,20 @@ const instructionsPrompt = `
 You are a technology trend analyzer focusing on TypeScript and modern web development technologies.
 `
 
-const getInputPrompt = ({ siteToSearch }: { siteToSearch: string }) => `
+const getInputPrompt = ({
+  siteToSearch,
+  existingProjects,
+}: PromptImformation) => `
 Please search the web and analyze current discussions about trending technologies. 
 Find up to 4 technologies that can be used in a nextJS, react, typescript project, that are being talked about somewhere on the internet. The discussion you find must be from within the last 1 week.
 Today is: ${new Date().toISOString()}.
-You MUST ONLY check the following site:
+You MUST start your search at the following site, ONLY navigate to new sites from there:
 - ${siteToSearch}
 
 The results you return will be used to brainstorm new features that can be built into a NextJS app, for fun, to learn new stuff.
 
+Here are technologies that have already been used in projects, and can be excluded from your search:
+${existingProjects.map((project) => project.technologyDemonstrated).join("\n")}
 
 If you don't find anything, respond with "No results found".
 `
@@ -57,11 +64,20 @@ const sitesToSearch = [
   "https://javascriptweekly.com/issues",
 ]
 
-const getInfoFromSite = async ({ siteToSearch }: { siteToSearch: string }) => {
+type PromptImformation = {
+  siteToSearch: string
+  existingProjects: PotentialProject[]
+}
+
+const getInfoFromSite = async ({
+  siteToSearch,
+  existingProjects,
+}: PromptImformation) => {
   try {
+    const prompt = getInputPrompt({ siteToSearch, existingProjects })
     const response = await openai.responses.parse({
       model: "gpt-4o",
-      input: getInputPrompt({ siteToSearch }),
+      input: prompt,
       instructions: instructionsPrompt,
       tool_choice: "required",
       tools: [
@@ -88,9 +104,16 @@ export type TechnologyInfo = TrendingTech & {
 }
 
 export const gatherInformation = async (): Promise<TechnologyInfo[]> => {
+  const existingProjects = await readQuery("potentialProjects", ({ where }) => {
+    return [where("archived", "==", false)]
+  })
+
   const results = await Promise.all(
     sitesToSearch.map(async (site) => {
-      const technologies = await getInfoFromSite({ siteToSearch: site })
+      const technologies = await getInfoFromSite({
+        siteToSearch: site,
+        existingProjects,
+      })
       return technologies.map((technology) => ({
         ...technology,
         originalSearchSource: site,
