@@ -59,6 +59,7 @@
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.78.0",
     "@sentry/nextjs": "^9.2.0",
+    "@tanstack/react-form": "^1.0.5",
     "@types/mdx": "^2.0.13",
     "batch-promises": "^0.0.3",
     "class-variance-authority": "^0.7.1",
