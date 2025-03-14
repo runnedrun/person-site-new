@@ -3,7 +3,13 @@
     "**/node_modules": true,
     "migrations_lib": true,
     "tmp": true,
-    "dist": true
+    "dist": true,
+    "private_configs/**": true,
+    "**/.env.*": true
+  },
+  "search.exclude": {
+    "private_configs/**": true,
+    "**/.env.*": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
 

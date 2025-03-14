@@ -7,8 +7,9 @@ const defaultParams = {}
 export const projectADayDataFunctions = {
   projectADayData: dataFn(defaultParams, () => {
     return {
-      projects: queryObs("potentialProjects", ({ where }) => [
+      projects: queryObs("potentialProjects", ({ where, orderBy }) => [
         where("archived", "==", false),
+        orderBy("createdAt", "desc"),
       ]).pipe(
         map((projects) =>
           projects.sort(
