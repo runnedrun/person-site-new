@@ -11,8 +11,8 @@ export const aggregrateProjects = inngest.createFunction(
     timezone: "Europe/Paris", // CET timezone
   },
   async ({ event, step }) => {
-    if (isStaging) {
-      console.log("in staging, not running aggregation")
+    if (!process.env.NEXT_PUBLIC_RUN_CRONS) {
+      console.log("in preview branch, not running aggregation")
       return
     }
 
