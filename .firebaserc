@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "david-qa"
+    "default": "personal-site-staging-a1f3e",
+    "staging": "personal-site-staging-a1f3e",
+    "prod": "david-qa"
   }
 }

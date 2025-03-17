@@ -1,8 +1,9 @@
 import { WhereFilterOp, OrderByDirection } from "@firebase/firestore"
-import { Filter } from "@google-cloud/firestore"
+
 import { CollectionModels } from "./CollectionModels"
 import { PossibleQueryConstraint } from "./readerFe"
 import { BeQueryBuilder, QueryWithTypedWhere } from "./readerBe"
+import { Filter } from "firebase-admin/firestore"
 
 type Field = {
   segments: string[]

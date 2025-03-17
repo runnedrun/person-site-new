@@ -2,6 +2,7 @@ import { createDoc, setDoc } from "@/data/writer"
 import { inngest } from "../../client"
 import { gatherInformation, TrendingTech } from "./gatherInformation"
 import { getProjectInformationFromTech } from "./getProjectInformationFromTech"
+import { isStaging } from "@/helpers/isProdEnvironment"
 
 export const aggregrateProjects = inngest.createFunction(
   { id: "aggregrate-projects" },
@@ -10,6 +11,11 @@ export const aggregrateProjects = inngest.createFunction(
     timezone: "Europe/Paris", // CET timezone
   },
   async ({ event, step }) => {
+    if (isStaging) {
+      console.log("in staging, not running aggregation")
+      return
+    }
+
     console.log("aggregrating projects")
     const projectInformation = await step.run(
       "gather-information",

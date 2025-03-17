@@ -60,6 +60,7 @@
     "@sanity/vision": "^3.78.0",
     "@sentry/nextjs": "^9.2.0",
     "@types/mdx": "^2.0.13",
+    "@vercel/sdk": "^1.5.0",
     "batch-promises": "^0.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
