@@ -73,7 +73,7 @@ export const QADisplay = () => {
   )
   const [qaIndex, setQaIndex] = useState(startingIndex)
   const [isLoading, setIsLoading] = useState(false) // Get all QA pairings for user
-
+  const [error, setError] = useState<string | null>(null)
   const currentQA = withDefaultQuestion?.[qaIndex] as QAPairing
 
   useEffect(() => {
@@ -111,9 +111,13 @@ export const QADisplay = () => {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     if (currentAnswerIsForCurrentQuestion) {
-      return
+      return false
     }
+    setError(null)
 
     setIsLoading(true)
     e.preventDefault()
@@ -139,11 +143,15 @@ export const QADisplay = () => {
     const ref = await createDoc("qaPairings", newQA)
 
     // Trigger answer processing
-    await fetch("/api/process_message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messageId: ref.id }),
-    })
+    try {
+      await fetch("/api/process_message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId: ref.id }),
+      })
+    } catch (error) {
+      setError("Error submitting question...please try again.")
+    }
     setIsLoading(false)
   }
 
@@ -189,6 +197,7 @@ export const QADisplay = () => {
       >
         Want to know more? Ask David Bot!
       </div>
+      {error && <div className="text-red-500">{error}</div>}
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
