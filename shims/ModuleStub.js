@@ -22,6 +22,9 @@ let moduleStub
 // Create a handler that properly handles the prototype chain
 const handler = {
   get(target, prop) {
+    if (prop === "_isStub") {
+      return true
+    }
     // Critical: Return the actual prototype for inheritance
     if (prop === "prototype") {
       return ExtendableBase.prototype
@@ -94,3 +97,4 @@ export const toBeQueryBuilder = moduleStub
 export const default_export = moduleStub
 export const createQueryBuilder = moduleStub
 export const QueryBuilder = moduleStub
+export const _isStub = true
