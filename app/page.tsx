@@ -1,12 +1,12 @@
-import { AboutPageWrapper } from "@/components/about/AboutPageWrapper"
-import { rootComponent } from "@/data/rootComponent"
-import { aboutDataFns } from "@/loaders/about/aboutDataFns"
+import HomePage from "@/components/home/HomePage"
 
-export default rootComponent(aboutDataFns, AboutPageWrapper)
+export default function Home() {
+  return <HomePage />
+}
 
 export async function generateMetadata() {
   return {
-    title: "All About David Gaynor",
-    description: "Hi I'm David. Here's a bunch of information about me.",
+    title: "Writtin",
+    description: "You + Bot",
   }
 }

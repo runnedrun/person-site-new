@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  User,
-  getAuth,
-  onAuthStateChanged,
-  signInAnonymously,
-} from "firebase/auth"
+import { User, getAuth, onAuthStateChanged } from "@firebase/auth"
 import { createContext, ReactNode, useState, useEffect } from "react"
 import { init } from "../helpers/initFb"
 
@@ -13,44 +8,36 @@ import { init } from "../helpers/initFb"
 export type UserContextType = {
   user: User | null
   loading: boolean
+  isAuthenticated: boolean
 }
 
 // Create a new context for the user with the separate type
 export const UserContext = createContext<UserContextType>({
   user: null,
   loading: true,
+  isAuthenticated: false,
 })
 // Create a provider component
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
     const store = init()
     const auth = getAuth(store.app)
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser)
-        setLoading(false)
-      } else {
-        signInAnonymously(auth)
-          .then((userCredential) => {
-            setUser(userCredential.user)
-            setLoading(false)
-          })
-          .catch((error) => {
-            console.error("Error signing in anonymously:", error)
-            setLoading(false)
-          })
-      }
+      setUser(currentUser)
+      setIsAuthenticated(!!currentUser && !currentUser.isAnonymous)
+      setLoading(false)
     })
 
     return () => unsubscribe()
   }, [])
 
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ user, loading, isAuthenticated }}>
       {children}
     </UserContext.Provider>
   )

@@ -13,7 +13,7 @@ If you need to store data in a collection that isn't listed there, you can creat
 ## Step 1) create a new file called [modelName].ts in the data/types folder. Here is an example:
 
 // types/QAMessage.ts
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from "@firebase/firestore"
 import { MDXRemoteSerializeResult } from "next-mdx-remote"
 import { Model } from "../baseTypes/Model"
 

@@ -11,7 +11,7 @@ import {
   getFirestore,
   setDoc as fbSetDoc,
   writeBatch,
-} from "firebase/firestore"
+} from "@firebase/firestore"
 import { chunk } from "lodash"
 import { getUuid } from "@/data/helpers/getUuid"
 import { init } from "./helpers/initFb"
