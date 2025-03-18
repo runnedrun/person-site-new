@@ -188,7 +188,7 @@ Remember:
 
         return NextResponse.json({ success: true })
       } catch (error) {
-        logger.error("Tool execution error", error)
+        console.error("Tool execution error", error)
         return NextResponse.json(
           { error: "Error executing tool" },
           { status: 500 }
