@@ -5,7 +5,7 @@ import { QAPairing } from "@/data/types/QAPairing"
 import { useObs } from "@/data/useObs"
 import { createDoc } from "@/data/writer"
 import { useMDXComponents } from "@/mdx-components"
-import { orderBy, Timestamp } from "firebase/firestore"
+import { orderBy, Timestamp } from "@firebase/firestore"
 import { isNil, uniqBy } from "lodash"
 import { ArrowDown, ChevronLeft, ChevronRight, Send } from "lucide-react"
 import { MDXRemote as MDXRemoteClient } from "next-mdx-remote"
@@ -114,9 +114,6 @@ export const QADisplay = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (currentAnswerIsForCurrentQuestion) {
-      return false
-    }
     setError(null)
 
     setIsLoading(true)

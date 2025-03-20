@@ -43,7 +43,7 @@ import {
   QueryEndAtConstraint,
   QueryLimitConstraint,
   QueryStartAtConstraint,
-} from "firebase/firestore"
+} from "@firebase/firestore"
 import { isArray, isEqual, isNil, isNull, isUndefined, partition } from "lodash"
 import { ValuesType } from "utility-types"
 import { init } from "./helpers/initFb"

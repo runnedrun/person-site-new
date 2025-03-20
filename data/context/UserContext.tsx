@@ -5,7 +5,7 @@ import {
   getAuth,
   onAuthStateChanged,
   signInAnonymously,
-} from "firebase/auth"
+} from "@firebase/auth"
 import { createContext, ReactNode, useState, useEffect } from "react"
 import { init } from "../helpers/initFb"
 
