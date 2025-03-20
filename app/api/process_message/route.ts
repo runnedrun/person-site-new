@@ -20,6 +20,7 @@ export type ProcessMessageArgs = {
 export async function POST(req: NextRequest) {
   const anthropic = new Anthropic({
     apiKey: process.env.CLAUDE_API_KEY,
+    timeout: 30000,
   })
 
   getBeAppNext()
