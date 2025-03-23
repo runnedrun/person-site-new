@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { ProvideAnalytics } from "@/data/analytics/ProvideAnalytics"
+import { UserProvider } from "@/data/context/UserContext"
+import { Navbar } from "@/components/layout/Navbar"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,11 +36,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ProvideAnalytics>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
-        >
-          {children}
-        </body>
+        <UserProvider>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
+          >
+            <Navbar />
+            {children}
+          </body>
+        </UserProvider>
       </ProvideAnalytics>
     </html>
   )

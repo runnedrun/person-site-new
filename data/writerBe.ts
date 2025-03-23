@@ -4,7 +4,7 @@ import { CreateOptions } from "@/data/helpers/CreateOptions"
 import { getUuid } from "@/data/helpers/getUuid"
 import { getBeAppNext } from "@/helpers/initFbBe"
 import { Timestamp as FeTimestamp } from "@firebase/firestore"
-import batchPromises from "batch-promises"
+import { PromisePool } from "@supercharge/promise-pool"
 import { getFirestore, Timestamp } from "firebase-admin/firestore"
 import { chunk } from "lodash"
 import { deepMapObj } from "./helpers/deepMapObj"
@@ -98,33 +98,35 @@ export const batchSet = async <CollectionName extends keyof CollectionModels>(
   const chunked = chunk(records, batchSize)
   const entries = Array.from(chunked.entries())
 
-  return batchPromises(
-    5,
-    entries,
-    async ([batchIndex, sentenceBatch]: [
-      number,
-      CollectionModels[CollectionName][],
-    ]) => {
-      const writer = firestore.batch()
-      sentenceBatch.forEach((record, sentenceIndex) => {
-        const recordToWrite = {
-          ...record,
-          ...genExtraData(),
-        } as CollectionModels[CollectionName]
+  const { results } = await PromisePool.withConcurrency(5)
+    .for(entries)
+    .process(
+      async ([batchIndex, sentenceBatch]: [
+        number,
+        CollectionModels[CollectionName][],
+      ]) => {
+        const writer = firestore.batch()
+        sentenceBatch.forEach((record, sentenceIndex) => {
+          const recordToWrite = {
+            ...record,
+            ...genExtraData(),
+          } as CollectionModels[CollectionName]
 
-        const recordRef = getDocKey
-          ? firestore
-              .collection(collectionName)
-              .doc(getDocKey(record, sentenceIndex + batchIndex * batchSize))
-          : firestore.collection(collectionName).doc()
+          const recordRef = getDocKey
+            ? firestore
+                .collection(collectionName)
+                .doc(getDocKey(record, sentenceIndex + batchIndex * batchSize))
+            : firestore.collection(collectionName).doc()
 
-        writer.set(recordRef, convertAllTimestamps(recordToWrite), {
-          merge: true,
+          writer.set(recordRef, convertAllTimestamps(recordToWrite), {
+            merge: true,
+          })
         })
-      })
-      await writer.commit()
-    }
-  )
+        await writer.commit()
+      }
+    )
+
+  return results
 }
 
 export const batchDelete = async <
@@ -139,18 +141,18 @@ export const batchDelete = async <
   const chunked = chunk(recordIds, batchSize)
   const entries = Array.from(chunked.entries())
 
-  return batchPromises(
-    5,
-    entries,
-    async ([, sentenceBatch]: [number, string[]]) => {
+  const { results } = await PromisePool.withConcurrency(5)
+    .for(entries)
+    .process(async ([, sentenceBatch]: [number, string[]]) => {
       const writer = firestore.batch()
       sentenceBatch.forEach((recordId) => {
         const recordRef = firestore.collection(collectionName).doc(recordId)
         writer.delete(recordRef)
       })
       await writer.commit()
-    }
-  )
+    })
+
+  return results
 }
 
 export const _isStub = false

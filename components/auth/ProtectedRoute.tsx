@@ -11,6 +11,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading, isAuthenticated } = useContext(UserContext)
+
   const router = useRouter()
 
   useEffect(() => {

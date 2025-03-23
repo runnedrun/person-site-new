@@ -76,14 +76,6 @@ export const rootComponent = <
     params: Promise<Record<string, any>>
     searchParams: Promise<Record<string, any>>
   }) => {
-    const obs = queryObs("qaPairings", ({ where }) => {
-      return [
-        where("archived", "==", false),
-        where("createdAt", "==", "2025-02-25"),
-      ]
-    })
-    await firstValueFrom(obs)
-
     const res = {} as Record<string, unknown>
     const resolvedParams = await params
     const resolvedSearchParams = await searchParams

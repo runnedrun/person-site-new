@@ -47,7 +47,7 @@ export function Navbar() {
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2 font-bold">
             <Bot className="h-5 w-5" />
-            <span>Writtin</span>
+            <span>My App</span>
           </Link>
         </div>
 

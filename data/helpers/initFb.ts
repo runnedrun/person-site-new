@@ -5,7 +5,6 @@ import {
   getFirestore,
   initializeFirestore,
 } from "@firebase/firestore"
-import { CommentsEnabledContext } from "sanity/_singletons"
 
 const getApp = (name?: string) => {
   let app = null

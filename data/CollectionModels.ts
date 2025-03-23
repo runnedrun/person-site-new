@@ -1,7 +1,5 @@
-import { QAPairing } from "./types/QAPairing"
-import { PotentialProject } from "./types/PotentialProject"
+import { UserProfile } from "./types/UserProfile"
 
 export type CollectionModels = {
-  qaPairings: QAPairing
-  potentialProjects: PotentialProject
+  userProfile: UserProfile
 }

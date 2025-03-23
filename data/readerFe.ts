@@ -93,9 +93,9 @@ export const readDoc = async <CollectionName extends keyof CollectionModels>(
 
 export const docObs = <CollectionName extends keyof CollectionModels>(
   collectionName: CollectionName,
-  id: string | Observable<string | null>
+  id: string | Observable<string | null> | undefined | null
 ): Observable<CollectionModels[CollectionName] | null> => {
-  if (isNull(id)) {
+  if (isNil(id)) {
     return of(null)
   }
   const db = init()
