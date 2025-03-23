@@ -7,7 +7,6 @@ import { readDoc, readQuery } from "@/data/reader"
 import { QAPairing } from "@/data/types/QAPairing"
 import { setDoc } from "@/data/writer"
 
-import { getOpenAIClient } from "@/helpers/getOpenAIClient"
 import { getSecretAbout } from "@/sanity/getSecretAbout"
 import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs"
 import { serialize } from "next-mdx-remote/serialize"
