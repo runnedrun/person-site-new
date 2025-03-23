@@ -1,5 +1,5 @@
 ---
-description: This rule is used whenever you need to write something to our firestore db, which is our default datastore unless otherwise specified.
+description: This rule is used whenever you need to write something to our db from backend OR frontend (react components).
 globs: 
 alwaysApply: false
 ---
@@ -48,3 +48,5 @@ await batchDelete('collectionName',
 );
 
 Each method is typed so it only allows you to pass in collection names and model types listed in [CollectionModels.ts](mdc:data/CollectionModels.ts)
+
+We do not ever need to catch errors for writes as all writes are eventually consistent.

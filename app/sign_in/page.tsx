@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { init } from "@/data/helpers/initFb"
+import { createDoc } from "@/data/writer"
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -68,7 +69,6 @@ export default function SignIn() {
       const provider = new GoogleAuthProvider()
       await signInWithPopup(auth, provider)
 
-      // Redirect to home after successful sign-in
       router.push("/")
     } catch (error: any) {
       const errorMessage =
@@ -88,8 +88,8 @@ export default function SignIn() {
           </CardTitle>
           <CardDescription className="text-center">
             {isSignUp
-              ? "Create your personal bot account"
-              : "Sign in to manage your personal bot"}
+              ? "Create a new account"
+              : "Sign in to manage you account"}
           </CardDescription>
         </CardHeader>
 

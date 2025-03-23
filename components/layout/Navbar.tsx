@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useContext } from "react"
-import { UserContext } from "@/data/context/UserContext"
+import { UserContext } from "@/data/auth/UserContext"
 import { Button } from "@/components/ui/button"
 import { getAuth, signOut } from "@firebase/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -42,7 +42,7 @@ export function Navbar() {
   const displayName = user?.displayName || null
 
   return (
-    <nav className="border-b">
+    <nav className="flex w-full justify-center border-b">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2 font-bold">

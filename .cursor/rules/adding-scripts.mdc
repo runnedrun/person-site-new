@@ -1,5 +1,5 @@
 ---
-description: This rule should be used whenever you're requested to add a script which will be run on a one-off basis, instead of being used within this app, or if you are asked to add a file to the /scripts folder
+description: This rule should be used whenever you're explicity requested to add a script to the /scripts folder
 globs: 
 alwaysApply: false
 ---

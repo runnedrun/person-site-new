@@ -7,7 +7,10 @@ export const BaseFields: ModelBaseFields[] = [
   "archivedOn",
   "createdAt",
   "updatedAt",
+  "permissions",
 ]
+
+export type PermissionValue = "admin" | "write" | "read"
 
 export type ModelBase = {
   uid?: string
@@ -15,6 +18,13 @@ export type ModelBase = {
   archivedOn?: Timestamp
   createdAt?: Timestamp
   updatedAt?: Timestamp
+  ownerKeys?: string[]
+  permissions?: {
+    // read: can read the doc
+    // write: can write any field EXCEPT permissions
+    // admin: can update any field
+    [key: string]: "admin" | "write" | "read"
+  }
 }
 
 export type Model<

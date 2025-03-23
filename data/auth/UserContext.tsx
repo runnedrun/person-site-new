@@ -1,18 +1,18 @@
 "use client"
 
-import { User, UserProfile, getAuth, onAuthStateChanged } from "@firebase/auth"
+import { User, getAuth, onAuthStateChanged } from "@firebase/auth"
 
 import { createContext, ReactNode, useState, useEffect } from "react"
 import { init } from "../helpers/initFb"
 import { useObs } from "../useObs"
 import { docObs } from "../reader"
-
+import { UserProfile } from "../types/UserProfile"
 // Create a separate type for the user context
 export type UserContextType = {
   user: User | null
   loading: boolean
   isAuthenticated: boolean
-  userProfile: UserProfile | null
+  userProfile: (UserProfile & { email: string }) | null
 }
 
 // Create a new context for the user with the separate type
@@ -47,7 +47,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         user,
         loading,
         isAuthenticated: !loading && !!user && !user.isAnonymous,
-        userProfile,
+        userProfile: userProfile
+          ? {
+              ...userProfile,
+              email: user?.email || "",
+            }
+          : null,
       }}
     >
       {children}

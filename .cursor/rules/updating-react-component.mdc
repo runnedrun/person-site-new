@@ -1,0 +1,8 @@
+---
+description: This rule should be used whenever a new react component is being updated or created
+globs: 
+alwaysApply: false
+---
+Whenever possible use components from /components. They are shadcn components. 
+
+For styling please use tailwind 3 styles utilities.

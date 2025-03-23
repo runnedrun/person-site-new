@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { ProvideAnalytics } from "@/data/analytics/ProvideAnalytics"
-import { UserProvider } from "@/data/context/UserContext"
+import { UserProvider } from "@/data/auth/UserContext"
 import { Navbar } from "@/components/layout/Navbar"
 
 const geistSans = Geist({
@@ -40,7 +40,6 @@ export default function RootLayout({
           <body
             className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
           >
-            <Navbar />
             {children}
           </body>
         </UserProvider>

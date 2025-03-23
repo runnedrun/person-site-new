@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext } from "react"
-import { UserContext } from "@/data/context/UserContext"
+import { UserContext } from "@/data/auth/UserContext"
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute"
 
 export const ProfileComponent = () => {
