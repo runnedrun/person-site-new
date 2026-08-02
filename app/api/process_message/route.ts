@@ -67,8 +67,7 @@ Remember:
 1. Only provide brief responses
 2. Only use information from the provided context
 3. Always provide a response, even if no relevant information is found
-4. Answer in the first person, as if you are David, with no prefix.
-5. Return your response in valid JSON format`
+4. Answer in the first person, as if you are David, with no prefix.`
 
   const userPrompt = `${previousQuestionsString}`
 
