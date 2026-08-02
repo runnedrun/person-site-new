@@ -1,4 +1,8 @@
 export SRC_DIR=$(cd "$(dirname "$0")/.."; pwd)
+export CLOUDSDK_CONFIG="$SRC_DIR/.gcloud"
+export GCLOUD_PROJECT=david-qa
+export PROJECT_NAME=david-qa
+gcloud config set project david-qa 2>/dev/null || true
 firebase use prod
 cp ./private_configs/prod-config.env .env.development
 cp ./private_configs/prod-config.env .env.production

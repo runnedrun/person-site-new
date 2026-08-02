@@ -1,5 +1,6 @@
 const maxDuration = 90
 import { getBeAppNext } from "@/helpers/initFbBe"
+import { getVertexAIClient } from "@/helpers/getVertexAIClient"
 import { Timestamp } from "firebase-admin/firestore"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -8,25 +9,17 @@ import { QAPairing } from "@/data/types/QAPairing"
 import { setDoc } from "@/data/writer"
 
 import { getSecretAbout } from "@/sanity/getSecretAbout"
-import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs"
 import { serialize } from "next-mdx-remote/serialize"
 import { answerFormatExplanation } from "./answerFormatExplanation"
-import Anthropic from "@anthropic-ai/sdk"
 export type ProcessMessageArgs = {
   messageId: string
 }
 
 export async function POST(req: NextRequest) {
-  const anthropic = new Anthropic({
-    apiKey: process.env.CLAUDE_API_KEY,
-    timeout: 30000,
-  })
-
   getBeAppNext()
 
   const { messageId } = await req.json()
 
-  // Get the QA pairing
   const qaDoc = await readDoc("qaPairings", messageId)
 
   const previousQuestions = await readQuery(
@@ -50,12 +43,10 @@ export async function POST(req: NextRequest) {
     })
     .join("\n")
 
-  // Get context from storage
   const context = await getSecretAbout()
 
   const currentDate = new Date().toISOString()
 
-  // Prepare the prompt
   const systemPrompt = `You are an AI assistant that answers questions as if you ARE David Gaynor, your creator. You give fun answers to direct questions about David using ONLY the information provided in the attached files.
 Answer in the first person, as if you are David.
 Answer using the style of the writing in the below context.
@@ -81,26 +72,18 @@ Remember:
 
   const userPrompt = `${previousQuestionsString}`
 
-  // const response = await getOpenAIClient().responses.create({
-  //   model: "gpt-4.5-preview",
-  //   input: userPrompt,
-  //   instructions: systemPrompt,
-  // })
-  // Get Claude response
-  const completion = await anthropic.messages.create({
-    model: "claude-3-5-sonnet-latest",
-    max_tokens: 400,
-    messages: [
-      { role: "assistant", content: systemPrompt },
-      { role: "user", content: userPrompt },
-      { role: "assistant", content: "Here is my answer, as if I am David:" },
-    ],
+  const model = getVertexAIClient().getGenerativeModel({
+    model: "gemini-3.5-flash",
+    systemInstruction: systemPrompt,
+    generationConfig: { maxOutputTokens: 400 },
   })
 
-  // const aiResponse = response.output_text
-  const aiResponse = (completion.content[0] as TextBlock).text
+  const completion = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+  })
 
-  // Update QA pairing with response
+  const aiResponse = completion.response.candidates![0].content.parts![0].text!
+
   await setDoc("qaPairings", messageId, {
     answer: aiResponse,
     serializedAnswer: await serialize(aiResponse),
