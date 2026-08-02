@@ -80,11 +80,8 @@ Remember:
   const completion = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 400,
-    messages: [
-      { role: "assistant", content: systemPrompt },
-      { role: "user", content: userPrompt },
-      { role: "assistant", content: "Here is my answer, as if I am David:" },
-    ],
+    system: systemPrompt,
+    messages: [{ role: "user", content: userPrompt }],
   })
 
   const aiResponse = (completion.content[0] as TextBlock).text
