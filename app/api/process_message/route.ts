@@ -1,6 +1,5 @@
 const maxDuration = 90
 import { getBeAppNext } from "@/helpers/initFbBe"
-import { getVertexAIClient } from "@/helpers/getVertexAIClient"
 import { Timestamp } from "firebase-admin/firestore"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -9,13 +8,20 @@ import { QAPairing } from "@/data/types/QAPairing"
 import { setDoc } from "@/data/writer"
 
 import { getSecretAbout } from "@/sanity/getSecretAbout"
+import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs"
 import { serialize } from "next-mdx-remote/serialize"
 import { answerFormatExplanation } from "./answerFormatExplanation"
+import Anthropic from "@anthropic-ai/sdk"
 export type ProcessMessageArgs = {
   messageId: string
 }
 
 export async function POST(req: NextRequest) {
+  const anthropic = new Anthropic({
+    apiKey: process.env.CLAUDE_API_KEY,
+    timeout: 30000,
+  })
+
   getBeAppNext()
 
   const { messageId } = await req.json()
@@ -71,17 +77,17 @@ Remember:
 
   const userPrompt = `${previousQuestionsString}`
 
-  const model = getVertexAIClient().getGenerativeModel({
-    model: "gemini-3.5-flash",
-    systemInstruction: systemPrompt,
-    generationConfig: { maxOutputTokens: 400 },
+  const completion = await anthropic.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 400,
+    messages: [
+      { role: "assistant", content: systemPrompt },
+      { role: "user", content: userPrompt },
+      { role: "assistant", content: "Here is my answer, as if I am David:" },
+    ],
   })
 
-  const completion = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-  })
-
-  const aiResponse = completion.response.candidates![0].content.parts![0].text!
+  const aiResponse = (completion.content[0] as TextBlock).text
 
   await setDoc("qaPairings", messageId, {
     answer: aiResponse,
