@@ -69,13 +69,19 @@ export const FutureAbout = () => {
 
       <TextWithProgress
         content="I want to work on challenging problems with a team that I depend on as much as they depend on me."
-        progress={60}
+        progress={85}
         progressPopupContent={
           <div>
-            In most of my work I get paid to do things I&apos;ve done in the
-            past, but this time with fewer mistakes. It has it&apos;s pros
-            (flexible hours, remote work), but one downside is I learn from and
-            rely on my peers less than I&apos;d like.
+            Since 2025 I&apos;ve been at{" "}
+            <a
+              href="https://aheadhealth.com/"
+              className="text-blue-600 hover:underline"
+            >
+              Ahead Health
+            </a>
+            , where I was the first engineer and we&apos;re now a team of four.
+            Before that, most of my work was consulting—flexible, but I learned
+            from and relied on my peers less than I&apos;d like.
           </div>
         }
       />
@@ -118,33 +124,34 @@ export const FutureAbout = () => {
         progressPopupContent={
           <div>
             <div>
-              In my 20&apos;s I worked on products that&apos;s I cared about,
-              despite them solving a problem I didn&apos;t have: An important
-              social media platform, which I rarely used. An amazing app, for
-              the opposite gender. A company that changed peoples live&apos;s—
-              on a continent I didn&apos;t grow up on.
+              In my 20&apos;s I worked on products that I cared about, despite
+              them solving a problem I didn&apos;t have: An important social
+              media platform, which I rarely used. An amazing app, for the
+              opposite gender. A company that changed peoples live&apos;s— on a
+              continent I didn&apos;t grow up on.
             </div>
             <div className="mt-2">
               I loved this work, and it would be unrealistic to expect that all
               my projects will help me.
             </div>
             <div className="mt-2">
-              However, I hope to work on more projects that I can use everyday.
-              Like my own{" "}
+              These days I mostly vibe tools for my own life—slowly replacing
+              every SaaS I use with something tailored to me. My pre-vibing side
+              projects include{" "}
               <Link
                 className="text-blue-600 hover:underline"
                 href="https://yaya.press"
               >
-                language app, yaya.press
-              </Link>{" "}
-              that has taught me 3 languages, and{" "}
+                yaya.press
+              </Link>
+              ,{" "}
               <Link
                 className="text-blue-600 hover:underline"
                 href="https://thearcgame.com"
               >
-                my own digital board game, thearcgame.com
-              </Link>{" "}
-              that I play monthly with friends.
+                thearcgame.com
+              </Link>
+              , and this site.
             </div>
           </div>
         }

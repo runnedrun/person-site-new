@@ -44,8 +44,12 @@ export const DavidSummary = () => {
         11 cities on 4 continents.
       </AboutPopupTrigger>
       . I worked at Twitter through its IPO. I spent a lot of my 20&apos;s
-      launching startups, including one which was acquired. I&apos;ve enjoyed
-      some success and grown a lot through failure.{" "}
+      launching startups, including one which was acquired.       Since 2025 I&apos;ve been at{" "}
+      <AboutPopupTrigger popupContent="I was the first engineer on the team. We're now a team of 4. aheadhealth.com">
+        Ahead Health
+      </AboutPopupTrigger>
+      . These days I mostly vibe tools for my own life—slowly replacing every
+      SaaS I use with something tailored to me.{" "}
     </div>
   )
 }

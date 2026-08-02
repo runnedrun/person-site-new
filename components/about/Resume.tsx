@@ -41,8 +41,15 @@ export default function Portfolio() {
           </div>
           <div className="text-md max-w-[800px] pb-4 text-lg print:text-base">
             <div>
-              I started my career at Twitter then went on to launch a few
-              companies by myself and with others.
+              I started my career at Twitter, spent my 20&apos;s launching
+              startups, and since 2025 I&apos;ve been building at{" "}
+              <a
+                href="https://aheadhealth.com/"
+                className="text-blue-600 hover:underline"
+              >
+                Ahead Health
+              </a>
+              . These days I mostly vibe tools for my own life.
             </div>
             <div>
               {" "}
@@ -85,7 +92,7 @@ export default function Portfolio() {
                 </a>
               </div>
             }
-            period="2020 - Present"
+            period="2020 - 2024"
             role="Early Stage Startup Advising"
             description="I help early stage businesses discover and deliver high value tech products."
             className="translate-y-5 scale-[1.75]"
@@ -126,10 +133,20 @@ export default function Portfolio() {
 
         <ExperienceGroup title="Building Software">
           <ExperienceItem
+            logoText="Ahead"
+            title="Ahead Health"
+            link="https://aheadhealth.com/"
+            popupContent="I was the first engineer on the team. We're now a team of 4."
+            period="2025 - Present"
+            role="Software Engineer"
+            description="Building health software with a small, tight-knit engineering team."
+            className="text-sm font-semibold tracking-tight"
+          />
+          <ExperienceItem
             logo="/hylite-logo.png"
             title="Hylite"
             link="https://hylitepeople.com"
-            period="2021 - Present"
+            period="2021 - 2024"
             role="Fractional CTO"
             description="Ran engineering for Hylite as they grew from $0 to their first 6 figure contract."
           />
@@ -138,7 +155,7 @@ export default function Portfolio() {
             title="Open"
             className="w-24 -translate-x-6"
             link="https://hylitepeople.com"
-            period="2020 - Present"
+            period="2020 - 2024"
             role="Advisor/Principal Engineer"
             description="Built a digital meditation studio for real time classes. Helped unlock $7M in funding."
           />
@@ -163,19 +180,26 @@ export default function Portfolio() {
       </div>
       {/* side projects */}
 
-      <div className="mt-8 flex w-full flex-wrap items-center gap-4 print:justify-center print:text-xs">
-        <div className="text-lg font-bold print:text-sm">
-          Active side projects:
+      <div className="mt-8 flex w-full flex-col gap-2 print:text-xs">
+        <div className="flex w-full flex-wrap items-center gap-4 print:justify-center">
+          <div className="text-lg font-bold print:text-sm">
+            Pre-vibing side projects:
+          </div>
         </div>
-        <div className="flex gap-2">
-          <a
-            href="https://yaya.press"
-            className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
-          >
-            Yaya.press
-          </a>
-          <div className="shrink"> Google Docs for language learners.</div>
+        <div className="text-sm text-gray-600 print:text-xs">
+          Most of the code was written without the help of AI—including this
+          site.
         </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex gap-2">
+            <a
+              href="https://yaya.press"
+              className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
+            >
+              Yaya.press
+            </a>
+            <div className="shrink"> Google Docs for language learners.</div>
+          </div>
         <div className="flex gap-2">
           <a
             href="https://thearcgame.com/sample-game"
@@ -185,14 +209,24 @@ export default function Portfolio() {
           </a>
           <div>Control the arc of history.</div>
         </div>
-        <div className="flex gap-2">
-          <a
-            href="https://curtaincall.me"
-            className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
-          >
-            Curtaincall.me
-          </a>
-          <div>Immersive theatre tool.</div>
+          <div className="flex gap-2">
+            <a
+              href="https://curtaincall.me"
+              className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
+            >
+              Curtaincall.me
+            </a>
+            <div>Immersive theatre tool.</div>
+          </div>
+          <div className="flex gap-2">
+            <a
+              href="https://www.freedavid.co"
+              className="w-36 shrink-0 text-blue-600 hover:underline md:w-auto"
+            >
+              freedavid.co
+            </a>
+            <div>This site.</div>
+          </div>
         </div>
       </div>
 
